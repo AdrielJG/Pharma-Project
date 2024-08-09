@@ -12,6 +12,12 @@ import MedicineGroups from './components/Inventory/MedicineGroups';
 import Configuration from './components/Configuration';
 import Home from './components/Home';
 import Login from './components/Login';
+import ComplianceRecords from './components/ComplianceRecords';
+import Groups from './components/Groups';
+import OngoingOrders from './components/OngoingOrders';
+import Notification from './components/Notification';
+import DisOrders from './components/DisOrders';
+import DispatchedOrders from './components/DispatchedOrders';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -25,6 +31,9 @@ function App() {
 
         {/* Routes for the rest of the application */}
         <Route path="/" element={<Layout />}>
+          <Route path="/notifications" element={<Notification />} />
+          <Route path="/disorder" element={<DisOrders />} />
+          <Route path="/dispatch" element={<DispatchedOrders />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/configuration" element={<Configuration />} />
@@ -33,6 +42,9 @@ function App() {
           <Route path="/inventory/medicinelist/addmedicine" element={<AddMedicine />} />
           <Route path="/inventory/medicinelist/:id" element={<MedicineDetails />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/compliance" element={<ComplianceRecords />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/orders" element={<OngoingOrders />} />
         </Route>
       </Routes>
     </Router>
