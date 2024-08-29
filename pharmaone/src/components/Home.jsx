@@ -16,6 +16,7 @@ import track from '../assets/homeImg/track.png'
 import verify from '../assets/homeImg/verification.png'
 import consumer from '../assets/homeImg/consumer.png'
 import { Link } from 'react-router-dom'
+import GlobalStyle from './GlobalStyle';
 
 const Home = () => {
     const cards = [
@@ -34,6 +35,8 @@ const Home = () => {
         { id: 4, title: 'Consumer Access and Verification',img:consumer, description: "Consumers can easily access and verify the authenticity of their purchased medications through a simple online portal." },
     ]
     return (
+        <>
+        <GlobalStyle />
         <div className='bg-[#EDF1F5]'>
             <header className='px-14 py-2 flex items-center gap-4 w-full bg-gradient-to-tr from-[#67C3F3] to-[#5A98F2]'>
                 <img src={Logo} alt="logo" className='w-14' />
@@ -127,6 +130,7 @@ const Home = () => {
                         </div>
             </footer>
         </div>
+        </>    
     )
 }
 

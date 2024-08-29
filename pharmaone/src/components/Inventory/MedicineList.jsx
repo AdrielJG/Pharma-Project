@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import arrowdown from '../../assets/svgs/arrowdown.svg';
 
-// Modal components
+
 const DispatchModal = ({ onClose, onNext }) => (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
         <div className="bg-white p-5 rounded-lg">
@@ -253,7 +253,7 @@ const MedicineList = () => {
             dispatchStatus: 'Ready',
             category: 'Vitamins & Supplements',
         },
-        // Add more medicine data as needed
+        
     ];
 
     const handleCategorySelect = (category) => {

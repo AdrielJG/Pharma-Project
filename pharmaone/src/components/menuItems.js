@@ -17,10 +17,8 @@ export const menuItems = [
   { label: 'Reports', icon: ReportsLogo, path: '/reports' },
   { label: 'Groups', icon: GroupsLogo, path: '/groups' },
   { label: 'Configuration', icon: ConfigurationsLogo, path: '/configuration' },
-  { label: 'Ongoing Orders', icon: OngoingOrdersLogo, path: '/ongoing-orders' },
-  { label: 'Contact Management', icon: ContactLogo, path: '/contact-management' },
+  { label: 'Ongoing Orders', icon: OngoingOrdersLogo, path: '/orders' },
   { label: 'Notifications', icon: NotificationsLogo, path: '/notifications' },
-  { label: 'Help & Support', icon: HelpLogo, path: '/help-support' },
+  { label: 'Help & Support', icon: HelpLogo, path: '/contactus' },
   { label: 'Application Settings', icon: AppSettingsLogo, path: '/app-settings' },
-  { label: 'Covid-19', icon: CovidLogo, path: '/covid-19' },
 ];
