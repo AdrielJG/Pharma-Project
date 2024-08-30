@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import medicbag from '../assets/svgs/medicbag.svg'
-import medicbaggreen from '../assets/svgs/medicbaggreen.svg'
+import medicbag from '../../assets/svgs/medicbag.svg'
+import medicbaggreen from '../../assets/svgs/medicbaggreen.svg'
 
 const Inventory = () => {
   return (

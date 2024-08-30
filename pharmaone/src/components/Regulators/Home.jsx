@@ -1,21 +1,22 @@
 import React from 'react'
-import Logo from '../assets/Logo.png'
-import dotillustration from '../assets/homeImg/dotillustration.png'
-import illustration from '../assets/homeImg/illustration1.png'
-import bgImg from '../assets/homeImg/page2bg.png'
-import leftImg from '../assets/homeImg/page3left.png'
-import rightImg from '../assets/homeImg/page3right.png'
-import Location from '../assets/homeImg/location.svg'
-import Contract from '../assets/homeImg/Contract.svg'
-import Security from '../assets/homeImg/Security.svg'
-import form from '../assets/homeImg/form.svg'
-import report from '../assets/homeImg/report.svg'
-import trust from '../assets/homeImg/trust.png'
-import construct from '../assets/homeImg/construct.png'
-import track from '../assets/homeImg/track.png'
-import verify from '../assets/homeImg/verification.png'
-import consumer from '../assets/homeImg/consumer.png'
+import Logo from '../../assets/Logo.png'
+import dotillustration from '../../assets/homeImg/dotillustration.png'
+import illustration from '../../assets/homeImg/illustration1.png'
+import bgImg from '../../assets/homeImg/page2bg.png'
+import leftImg from '../../assets/homeImg/page3left.png'
+import rightImg from '../../assets/homeImg/page3right.png'
+import Location from '../../assets/homeImg/location.svg'
+import Contract from '../../assets/homeImg/Contract.svg'
+import Security from '../../assets/homeImg/Security.svg'
+import form from '../../assets/homeImg/form.svg'
+import report from '../../assets/homeImg/report.svg'
+import trust from '../../assets/homeImg/trust.png'
+import construct from '../../assets/homeImg/construct.png'
+import track from '../../assets/homeImg/track.png'
+import verify from '../../assets/homeImg/verification.png'
+import consumer from '../../assets/homeImg/consumer.png'
 import { Link } from 'react-router-dom'
+import GlobalStyle from './GlobalStyle';
 
 const Home = () => {
     const cards = [
@@ -34,6 +35,8 @@ const Home = () => {
         { id: 4, title: 'Consumer Access and Verification',img:consumer, description: "Consumers can easily access and verify the authenticity of their purchased medications through a simple online portal." },
     ]
     return (
+        <>
+        <GlobalStyle />
         <div className='bg-[#EDF1F5]'>
             <header className='px-14 py-2 flex items-center gap-4 w-full bg-gradient-to-tr from-[#67C3F3] to-[#5A98F2]'>
                 <img src={Logo} alt="logo" className='w-14' />
@@ -127,6 +130,7 @@ const Home = () => {
                         </div>
             </footer>
         </div>
+        </>    
     )
 }
 

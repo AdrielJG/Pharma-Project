@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import socialMediaLogo1 from '../assets/Social media logo 1.png';
-import socialMediaLogo2 from '../assets/Social media logo 2.png';
-import hide from '../assets/hide.png'; 
-import icons from '../assets/Icons.png';
-import Logo from '../assets/Logo.png';
-import bgImg from '../assets/Group 1171274989.png';
+import { Link, useNavigate } from 'react-router-dom';
+import socialMediaLogo1 from '../../assets/Social media logo 1.png';
+import socialMediaLogo2 from '../../assets/Social media logo 2.png';
+import hide from '../../assets/hide.png'; 
+import open from '../../assets/eye 1.svg'; 
+import icons from '../../assets/Icons.png';
+import Logo from '../../assets/Logo.png';
+import bgImg from '../../assets/Group 1171274989.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -35,19 +36,19 @@ const Login = () => {
             <div className="w-full mb-4">
               <button className="flex items-center justify-center bg-white border border-gray-300 rounded-lg py-2 px-4 shadow-md hover:bg-gray-100 transition duration-300 ease-in-out w-full">
                 <img className="h-6 w-6 mr-2" alt="Google Logo" src={socialMediaLogo1} />
-                <span>Continue with Google</span>
+                <Link to='/registration2'>Continue with Google</Link>
               </button>
             </div>
             <div className="w-full mb-4">
               <button className="flex items-center justify-center bg-white border border-gray-300 rounded-lg py-2 px-4 shadow-md hover:bg-gray-100 transition duration-300 ease-in-out w-full">
                 <img className="h-6 w-6 mr-2" alt="Facebook Logo" src={socialMediaLogo2} />
-                <span>Continue with Facebook</span>
+                <Link to='/registration2'>Continue with Facebook</Link>
               </button>
             </div>
             <div className="w-full mb-4 ">
               <button className="flex items-center justify-center  bg-black text-white rounded-lg py-2 px-4 shadow-md hover:bg-gray-800 transition duration-300 ease-in-out w-full">
                 <img className="h-6 w-6 mr-2" alt="Email Icon" src={icons} />
-                <span>Sign up with email</span>
+                <Link to='/registration'>Sign up with email</Link>
               </button>
             </div>
             <p className="text-center text-sm text-gray-600 mb-4">
@@ -79,7 +80,7 @@ const Login = () => {
                 />
                 <img
                   className="absolute right-2 top-2 cursor-pointer"
-                  src={showPassword ? hide : icons}
+                  src={showPassword ? hide : open}
                   alt="Toggle Password Visibility"
                   onClick={() => setShowPassword(!showPassword)}
                 />
