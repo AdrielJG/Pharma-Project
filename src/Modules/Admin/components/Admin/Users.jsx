@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const ComplianceRecords = () => {
+const Users = () => {
   const [verifiedUsers, setVerifiedUsers] = useState([]);
   const [rejectedUsers, setRejectedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -8,13 +8,18 @@ const ComplianceRecords = () => {
   // Function to fetch user data
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users");
+      const response = await fetch("http://localhost:5000/api/users", {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      console.log(data);
       setVerifiedUsers(data.verified_users || []);
       setRejectedUsers(data.rejected_users || []);
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching user data:", error.message);
     } finally {
       setLoading(false);
     }
@@ -149,4 +154,4 @@ const ComplianceRecords = () => {
   );
 };
 
-export default ComplianceRecords;
+export default Users;

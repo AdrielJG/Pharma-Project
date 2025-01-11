@@ -9,8 +9,8 @@ const Dashboard = () => {
       <div className='bg-white px-10 py-6 shadow-md'>
         <div className='flex justify-between items-center mb-4'>
           <div>
-            <h1 className='text-3xl font-semibold text-gray-800'>Pharmacy Dashboard</h1>
-            <h3 className='text-gray-600'>A quick data overview of the distribution process.</h3>
+            <h1 className='text-3xl font-semibold text-gray-800'>Dashboard</h1>
+            <h3 className='text-gray-600'>A quick data overview of the Manufacturing process.</h3>
           </div>
           <div>
             <button className='border px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
@@ -21,8 +21,8 @@ const Dashboard = () => {
 
         <div className='grid grid-cols-3 gap-6'>
           {/* Inventory Status Card */}
-          <a href='/inventoryP'>
-          <div className='bg-white border border-blue-400 rounded-lg shadow-sm p-4 transition-transform transform hover:scale-105 hover:shadow-lg'>
+          <a href='/inventory'>
+          <div className='bg-white border border-green-400 rounded-lg shadow-sm p-4 transition-transform transform hover:scale-105 hover:shadow-lg'>
             <div className='flex flex-col items-center'>
               <div className='bg-green-100 p-2 rounded-full mb-2'>
                 <img src={health} alt="Health Icon" className='w-6' />
@@ -37,7 +37,7 @@ const Dashboard = () => {
           </a>
 
           {/* Revenue Card */}
-          <a href='/salesP'>
+          <a href='/reports'>
           <div className='bg-white border border-yellow-400 rounded-lg shadow-sm p-4 transition-transform transform hover:scale-105 hover:shadow-lg'>
             <div className='flex flex-col items-center'>
               <div className='bg-yellow-100 p-2 rounded-full mb-2'>
@@ -53,7 +53,7 @@ const Dashboard = () => {
           </a>
 
           {/* Medicines Available Card */}
-          <a href='/inventoryP'>
+          <a href='/inventory'>
           <div className='bg-white border border-blue-400 rounded-lg shadow-sm p-4 transition-transform transform hover:scale-105 hover:shadow-lg'>
             <div className='flex flex-col items-center'>
               <div className='bg-blue-100 p-2 rounded-full mb-2'>
@@ -71,74 +71,42 @@ const Dashboard = () => {
       </div>
 
       <div className='px-10 py-6 grid grid-cols-2 gap-6'>
-      <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-semibold text-gray-900">Inventory Overview</h3>
-            <span className="text-blue-700 cursor-pointer">Go to Inventory &gt;</span>
+        {/* Inventory Section */}
+        <div className='bg-white border border-gray-200 rounded-lg shadow-md p-6'>
+          <div className='flex justify-between items-center mb-4'>
+            <h3 className='text-2xl font-semibold text-gray-900'>Inventory</h3>
+            <a href='/inventory' className='text-blue-700 cursor-pointer'>Go to Inventory &gt;</a>
           </div>
-          <div className="flex justify-between">
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">8500</h3>
-              <p className="text-lg text-gray-500">Total Orders Completed</p>
+          <div className='flex justify-between'>
+            <div className='text-left'>
+              <h3 className='text-3xl font-bold text-gray-800'>298</h3>
+              <p className='text-lg text-gray-500'>Total no of Medicines</p>
             </div>
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">150</h3>
-              <p className="text-lg text-gray-500">Products to be Restocked</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-semibold text-gray-900">Quick Report</h3>
-            <span className="text-gray-500">January 2024</span>
-          </div>
-          <div className="flex justify-between">
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">70,856</h3>
-              <p className="text-lg text-gray-500">Qty of Medicines Sold</p>
-            </div>
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">5,288</h3>
-              <p className="text-lg text-gray-500">Invoices Generated</p>
+            <div className='text-left'>
+              <h3 className='text-3xl font-bold text-gray-800'>24</h3>
+              <p className='text-lg text-gray-500'>Medicine Groups</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-semibold text-gray-900">My Pharmacy</h3>
-            <span className="text-blue-700 cursor-pointer">Go to User Management &gt;</span>
+        {/* Quick Report Section */}
+        <div className='bg-white border border-gray-200 rounded-lg shadow-md p-6'>
+          <div className='flex justify-between items-center mb-4'>
+            <h3 className='text-2xl font-semibold text-gray-900'>Quick Report</h3>
+            <span className='text-gray-500'>January 2024</span>
           </div>
-          <div className="flex justify-between">
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">04</h3>
-              <p className="text-lg text-gray-500">Total no of Suppliers</p>
+          <div className='flex justify-between'>
+            <div className='text-left'>
+              <h3 className='text-3xl font-bold text-gray-800'>70,856</h3>
+              <p className='text-lg text-gray-500'>Qty of Medicines Sold</p>
             </div>
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">05</h3>
-              <p className="text-lg text-gray-500">Total no of Distributors</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-semibold text-gray-900">Customers</h3>
-            <span className="text-blue-700 cursor-pointer">Go to Customers &gt;</span>
-          </div>
-          <div className="flex justify-between">
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">120</h3>
-              <p className="text-lg text-gray-500">New Customers this Month</p>
-            </div>
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-gray-800">350</h3>
-              <p className="text-lg text-gray-500">Total Customers</p>
+            <div className='text-left'>
+              <h3 className='text-3xl font-bold text-gray-800'>5,288</h3>
+              <p className='text-lg text-gray-500'>Invoices Generated</p>
             </div>
           </div>
         </div>
-    </div>
+      </div>
     </div>
   );
 }

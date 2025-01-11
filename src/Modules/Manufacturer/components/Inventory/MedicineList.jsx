@@ -224,7 +224,8 @@ const MedicineList = () => {
     useEffect(() => {
         // Fetch inventory from the backend
         fetch("http://localhost:5000/api/get-inventory", {
-          credentials: "include", // Ensure cookies/session data are sent
+            method: 'GET',
+          credentials: 'include', // Ensure cookies/session data are sent
         })
           .then((response) => {
             if (!response.ok) {
@@ -416,9 +417,9 @@ const MedicineList = () => {
                             <tbody>
                                 {filteredInventory.map((item, index) => (
                                     <tr key={index}>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicine_name}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicine_id}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicine_group}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineName}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicineId}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineGroup}</td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.quantity}</td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
                                             <button
@@ -430,7 +431,7 @@ const MedicineList = () => {
                                             </button>
                                         </td>
                                         <td className='px-2 py-4   text-sm'>
-                                            <Link to={`/inventory/medicinedetails/${item.medicine_id}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
+                                            <Link to={`/inventory/medicinedetails/${item.medicineId}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
                                                 View Full Details &gt;
                                             </Link>
                                         </td>

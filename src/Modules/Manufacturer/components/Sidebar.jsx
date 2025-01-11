@@ -28,6 +28,7 @@ const menuItems = [
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const dropdownRef = useRef(null);
 
   const handleProfileClick = () => {
@@ -41,11 +42,48 @@ const Sidebar = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/logout', {
+        method: 'POST',
+        credentials: 'include', // Include cookies in the request
+      });
+      const data = await response.json();
+      if (response.ok) {
+        navigate('/login');
+      } else {
+        console.error('Logout failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
+  useEffect(() => {
+      const fetchNotifications = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/notifications', {
+            method: 'GET',
+            credentials: 'include',
+          });
+          const data = await response.json();
+          if (response.ok) {
+            const unreadNotifications = data.filter(
+              (notification) => notification.status === 0
+            );
+            setHasUnreadNotifications(unreadNotifications.length > 0);
+          }
+        } catch (error) {
+          console.error('Error fetching notifications:', error);
+        }
+      };
+  
+      fetchNotifications();
+    }, []);
+
   const handleDropdownClick = (path) => {
     if (path === '/login') {
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate(path);
+      handleLogout();
     } else {
       navigate(path);
     }
@@ -126,8 +164,11 @@ const Sidebar = () => {
                       : 'py-4 px-6 flex gap-4 items-center justify-start text-gray-300 hover:bg-[#1D242E] hover:text-white rounded-lg transition-all duration-200'
                   }
                 >
-                  <div className="icon text-lg hover:scale-105 hover:rotate-6 transition-all duration-200">
+                  <div className="icon text-lg hover:scale-105 hover:rotate-6 transition-all duration-200 relative">
                     {item.icon}
+                    {item.label === 'Notifications' && hasUnreadNotifications && (
+                      <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+                    )}
                   </div>
                   <span className="text-base">{item.label}</span>
                 </NavLink>

@@ -15,18 +15,40 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+  
     if (email === '' || password === '') {
       setErrorMessage('Please fill out all fields.');
-    } else {
-      navigate('/dashboard');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Navigate to the dashboard URL returned by the backend
+        window.location.href = data.dashboard;
+      } else {
+        setErrorMessage(data.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again later.');
     }
   };
-
+  
   return (
     <div className="bg-cover bg-center min-h-screen flex items-center justify-center" style={{ backgroundImage: `url(${bgImg})` }}>
-      <section className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto  flex flex-col md:flex-row">
+      <section className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col justify-center items-center p-8">
           <div className="text-center mb-8">
             <div className="h-16 w-16 mx-auto bg-no-repeat bg-contain" style={{ backgroundImage: `url(${Logo})` }}></div>
@@ -36,7 +58,7 @@ const Login = () => {
             <div className="w-full mb-4">
               <button className="flex items-center justify-center bg-white border border-gray-300 rounded-lg py-2 px-4 shadow-md hover:bg-gray-100 transition duration-300 ease-in-out w-full">
                 <img className="h-6 w-6 mr-2" alt="Google Logo" src={socialMediaLogo1} />
-                <Link to='/registration2'>Continue with Google</Link>
+                <a href="http://localhost:5000/login/google">Continue with Google</a>
               </button>
             </div>
             <div className="w-full mb-4">
@@ -90,7 +112,6 @@ const Login = () => {
             </div>
             <div className="mb-4 mx-auto">
               <button className=" bg-blue-500 text-white rounded-full py-2 px-6 shadow-md hover:bg-blue-400" type="submit">
-                
                 <span>Log in</span>
               </button>
             </div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+
+
 /* Manufacturer */
 import Layout from './Modules/Manufacturer/components/Layout';
 import Dashboard from './Modules/Manufacturer/components/Dashboard';
@@ -38,6 +40,7 @@ import ComplianceRecordsD from './Modules/Distributor/components/Distributor/Com
 import GroupsD from './Modules/Distributor/components/Distributor/Groups';
 import NotificationD from './Modules/Distributor/components/Distributor/Notification';
 import ContactUsD from './Modules/Distributor/components/Distributor/ContactUs';
+import ChatInterfaceD from './Modules/Distributor/components/Distributor/ChatInterface';
 import Registration2D from './Modules/Distributor/components/Registration/Registration2';
 import ProfileD from './Modules/Distributor/components/Distributor/ProfilePage';
 import QReportD from './Modules/Distributor/components/Distributor/QualityReport';
@@ -86,6 +89,7 @@ import LoginP from './Modules/Pharmacy/components/Pharmacy/Login';
 import ComplianceRecordsP from './Modules/Pharmacy/components/ComplianceRecords';
 import GroupsP from './Modules/Pharmacy/components/Pharmacy/Groups';
 import OngoingOrdersP from './Modules/Pharmacy/components/Pharmacy/OngoingOrders';
+import NewOrdersP from './Modules/Pharmacy/components/Pharmacy/NewOrder';
 import NotificationP from './Modules/Pharmacy/components/Pharmacy/Notification';
 import DisOrdersP from './Modules/Pharmacy/components/Pharmacy/DisOrders';
 import DispatchedOrdersP from './Modules/Pharmacy/components/Pharmacy/DispatchedOrders';
@@ -122,6 +126,7 @@ import AuditA from './Modules/Admin/components/Admin/Audit';
 import UserReportA from './Modules/Admin/components/Admin/UserReports';
 import SiteReportA from './Modules/Admin/components/Admin/SiteReports';
 import DocumentVerificationA from './Modules/Admin/components/Admin/Documents';
+import ChatInterfaceA from './Modules/Admin/components/Admin/ChatInterface';
 
 import NotVerified from './Notverified';
 
@@ -160,6 +165,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/chat" element={<ChatInterface />} />
+          <Route path="/chat/:id" element={<ChatInterface />} />
         </Route>
 
         {/* Distributer */}
@@ -183,8 +189,10 @@ function App() {
           <Route path="/ordersD" element={<OrdersD />} />
           <Route path="/pendingordersD" element={<PendingOrdersD />} />
           <Route path="/dispatchedordersD" element={<DispatchedOrdersD />} />
-          <Route path="/medicine/:id" component={MedicineDetails} />   
-        </Route>R
+          <Route path="/medicine/:id" component={MedicineDetails} />
+          <Route path="/chatD" element={<ChatInterfaceD />} />   
+          <Route path="/chatD/:id" element={<ChatInterfaceD />} />
+        </Route>
 
         {/* Regulator */}
         <Route path="/" element={<LayoutR />}>
@@ -201,7 +209,8 @@ function App() {
           <Route path="/qualityrecR" element={<QualityRecR />} />
           <Route path="/registration2R" element={<Registration2R />} />
           <Route path="/dashboard_distR" element={<DistributorDashboardR />} />
-          <Route path="/chat" element={<ChatInterfaceR />} />
+          <Route path="/chatR" element={<ChatInterfaceR />} />
+          <Route path="/chatR/:id" element={<ChatInterfaceR />} />
         </Route>
 
         {/* Pharmacy */}
@@ -222,9 +231,11 @@ function App() {
           <Route path="/complianceP" element={<ComplianceRecordsP />} />
           <Route path="/groupsP" element={<GroupsP />} />
           <Route path="/ordersP" element={<OngoingOrdersP />} />
+          <Route path="/ordernowP" element={<NewOrdersP />} />
           <Route path="/profileP" element={<ProfilePageP />} />
           <Route path="/contactusP" element={<ContactUsP />} />
           <Route path="/chatP" element={<ChatInterfaceP />} />
+          <Route path="/chatP/:id" element={<ChatInterfaceP />} />
         </Route>
 
         {/* Admin */}
@@ -249,6 +260,7 @@ function App() {
           <Route path="/profileA" element={<ProfileA />} />
           <Route path="/qualityrecA" element={<QualityRecA />} />
           <Route path="/registration2A" element={<Registration2A />} />
+          <Route path="/chatA/:id" element={<ChatInterfaceA />} />
         </Route>
       </Routes>
     </Router>

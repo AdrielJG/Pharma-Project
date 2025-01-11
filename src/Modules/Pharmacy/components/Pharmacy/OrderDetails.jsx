@@ -48,9 +48,8 @@ const OrderDetails = () => {
         <div className="flex items-center mb-6">
           <img src="https://via.placeholder.com/80" alt="Product" className="w-20 h-20 object-cover mr-4"/>
           <div>
-            <h2 className="font-semibold">MacBook Pro 14”</h2>
-            <p className="text-gray-500">Space Gray | 32GB | 1TB</p>
-            <p className="text-lg font-semibold mt-2">$2599.00 <span className="text-sm text-gray-600">Qty: 1</span></p>
+            <h2 className="font-semibold">Paracetamol</h2>
+            <p className="text-lg font-semibold mt-2">₹259.00 <span className="text-sm text-gray-600">Qty: 10</span></p>
           </div>
         </div>
 

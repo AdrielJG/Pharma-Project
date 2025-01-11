@@ -59,42 +59,42 @@ const Dashboard = () => {
 
         {/* Dashboard Cards */}
         <div className='grid grid-cols-3 gap-6'>
-          {/* Active Orders */}
-          <a href="/ordersD" className='w-full'>
-            <div className='bg-white flex flex-col items-center border border-blue-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
-              <ReactSVG src={truckIcon} style={{ width: '64px', height: '64px' }} className='w-16 h-16 mb-4 text-blue-500'/> {/* Increased size to w-16 h-16 */}
-              <h3 className='text-3xl font-bold text-gray-800'>75</h3>
-              <p className='font-semibold text-gray-600 text-center'>Active Orders</p>
-              <div className='w-full mt-4 py-2 bg-blue-50 text-center rounded'>
-                <p className='text-blue-600 font-semibold hover:underline'>View Detailed Report</p>
-              </div>
+        {/* Active Orders */}
+        <a href="/ordersD" className='w-full'>
+          <div className='bg-white flex flex-col items-center border border-blue-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
+            <img src={truckIcon} alt="Truck Icon" className='w-13 mb-5' />
+            <h3 className='text-3xl font-bold text-gray-800'>75</h3>
+            <p className='font-semibold text-gray-600 text-center'>Active Orders</p>
+            <div className='w-full mt-4 py-2 bg-blue-50 text-center rounded'>
+              <p className='text-blue-600 font-semibold hover:underline'>View Detailed Report</p>
             </div>
-          </a>
+          </div>
+        </a>
 
-          {/* Total Products in Stock */}
-          <a href="/inventoryD" className='w-full'>
-            <div className='bg-white flex flex-col items-center border border-green-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
-              <ReactSVG src={boxIcon} style={{ width: '64px', height: '64px' }} className='w-16 h-16 mb-4 text-green-500'/> {/* Increased size to w-16 h-16 */}
-              <h3 className='text-3xl font-bold text-gray-800'>5,000</h3>
-              <p className='font-semibold text-gray-600 text-center'>Total Products in Stock</p>
-              <div className='w-full mt-4 py-2 bg-green-50 text-center rounded'>
-                <p className='text-green-600 font-semibold hover:underline'>View Detailed Report</p>
-              </div>
+        {/* Total Products in Stock */}
+        <a href="/inventoryD" className='w-full'>
+          <div className='bg-white flex flex-col items-center border border-green-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
+            <img src={boxIcon} alt="Box Icon" className='w-13 mb-5' />
+            <h3 className='text-3xl font-bold text-gray-800'>5,000</h3>
+            <p className='font-semibold text-gray-600 text-center'>Total Products in Stock</p>
+            <div className='w-full mt-4 py-2 bg-green-50 text-center rounded'>
+              <p className='text-green-600 font-semibold hover:underline'>View Detailed Report</p>
             </div>
-          </a>
+          </div>
+        </a>
 
-          {/* On-Time Delivery Rate */}
-          <a href="/shipmentD" className='w-full'>
-            <div className='bg-white flex flex-col items-center border border-yellow-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
-              <ReactSVG src={clockIcon} style={{ width: '64px', height: '64px' }} className='w-16 h-16 mb-4 text-yellow-500'/> {/* Increased size to w-16 h-16 */}
-              <h3 className='text-3xl font-bold text-gray-800'>92%</h3>
-              <p className='font-semibold text-gray-600 text-center'>On-Time Delivery Rate</p>
-              <div className='w-full mt-4 py-2 bg-yellow-50 text-center rounded'>
-                <p className='text-yellow-600 font-semibold hover:underline'>View Detailed Report</p>
-              </div>
+        {/* On-Time Delivery Rate */}
+        <a href="/shipmentD" className='w-full'>
+          <div className='bg-white flex flex-col items-center border border-yellow-200 rounded-lg p-6 shadow hover:shadow-lg transition-shadow duration-300'>
+            <img src={clockIcon} alt="Clock Icon" className='w-13 mb-5' />
+            <h3 className='text-3xl font-bold text-gray-800'>92%</h3>
+            <p className='font-semibold text-gray-600 text-center'>On-Time Delivery Rate</p>
+            <div className='w-full mt-4 py-2 bg-yellow-50 text-center rounded'>
+              <p className='text-yellow-600 font-semibold hover:underline'>View Detailed Report</p>
             </div>
-          </a>
-        </div>
+          </div>
+        </a>
+      </div>
       </div>
 
       {/* Additional Sections */}

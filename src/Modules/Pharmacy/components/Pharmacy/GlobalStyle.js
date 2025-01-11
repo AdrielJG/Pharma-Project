@@ -10,6 +10,33 @@ const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar-thumb {
     background: transparent;
   }
+/* Prevent text selection while dragging */
+.no-select {
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE 10+ */
+}
+.scrollbar {
+    position: fixed;
+    top: 10px;              /* Small gap from the top */
+    bottom: 10px;           /* Small gap from the bottom */
+    right: 20px;            /* Position on the right side */
+    width: 10px;            /* Width of the scrollbar */
+    background-color: #ccc; /* Scrollbar color */
+    border-radius: 5px;     /* Rounded edges */
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.scrollbar:hover {
+    background-color: #999; /* Darken color on hover for better visibility */
+}
+
+.no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
 
   /* Firefox */
   body {

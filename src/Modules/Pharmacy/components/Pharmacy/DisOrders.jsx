@@ -16,7 +16,7 @@ const DisOrders = () => {
             <th className='p-3 text-left'>Medicine ID</th>
             <th className='p-3 text-left'>Destination</th>
             <th className='p-3 text-left'>Status</th>
-            <th className='p-3 text-left'>Action</th>
+            <th className='p-3 text-left'>Action</th> 
           </tr>
         </thead>
         <tbody>

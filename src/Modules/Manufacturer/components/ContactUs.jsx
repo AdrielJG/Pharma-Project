@@ -1,7 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GlobalStyle from './GlobalStyle';
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
+  });
+
+  const [status, setStatus] = useState('');
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    setStatus(''); // Reset status message
+
+    try {
+      const response = await fetch('http://localhost:5000/api/feedback', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus('Feedback submitted successfully!');
+        setFormData({ firstName: '', lastName: '', email: '', message: '' }); // Reset form
+      } else {
+        const errorData = await response.json();
+        setStatus(errorData.error || 'An error occurred. Please try again.');
+      }
+    } catch (error) {
+      setStatus('Unable to submit feedback. Please try again later.');
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -42,7 +84,7 @@ const ContactUs = () => {
 
           {/* Contact Form Section */}
           <div className="bg-white shadow-xl rounded-lg p-10 w-full md:w-2/3 mx-auto transform transition-all hover:shadow-2xl">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="firstName">
@@ -51,6 +93,8 @@ const ContactUs = () => {
                   <input
                     type="text"
                     id="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-teal-500 transition-all duration-200"
                     placeholder="First Name"
                   />
@@ -62,6 +106,8 @@ const ContactUs = () => {
                   <input
                     type="text"
                     id="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-teal-500 transition-all duration-200"
                     placeholder="Last Name"
                   />
@@ -75,6 +121,8 @@ const ContactUs = () => {
                 <input
                   type="email"
                   id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-teal-500 transition-all duration-200"
                   placeholder="Email"
                 />
@@ -86,6 +134,8 @@ const ContactUs = () => {
                 </label>
                 <textarea
                   id="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-teal-500 transition-all duration-200"
                   placeholder="Type your message here..."
                   rows="5"
@@ -101,6 +151,13 @@ const ContactUs = () => {
                 </button>
               </div>
             </form>
+
+            {/* Display Status Message */}
+            {status && (
+              <div className="mt-4 text-center text-lg text-gray-700">
+                {status}
+              </div>
+            )}
           </div>
         </div>
 

@@ -9,13 +9,13 @@ const Reports = () => {
         <div className='flex justify-between items-center mb-5'>
             <div>
                 <h1 className='text-2xl font-bold '>Reports</h1>
-                <h3>Overall reports related to the pharmacy.</h3>
+                <h3>Detailed sales and payment report.</h3>
             </div>
             
         </div>
         <div className='w-full flex gap-5 '>
        
-        <a href="/salesP">
+        <a href="/sales">
                     <div className='bg-white flex flex-col items-center border-2 border-yellow-400 rounded-lg w-64 overflow-hidden pt-5 gap-1'>
                         <img src={money} alt="" className='w-10 mb-2'/>
                         <h3 className='text-2xl font-bold'>Rs. 8,55,875</h3>
@@ -28,7 +28,7 @@ const Reports = () => {
                     </div>
                 </a>
 
-                <a href="/salesP">
+                <a href="">
                     <div className='bg-white flex flex-col items-center border-2 border-green-400 rounded-lg w-64 overflow-hidden pt-5 gap-1'>
                         <img src={health} alt="" className='w-8'/>
                         <h3 className='text-2xl font-bold'>523</h3>

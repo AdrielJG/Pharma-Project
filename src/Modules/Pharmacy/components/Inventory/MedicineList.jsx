@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import arrowdown from '../../assets/svgs/arrowdown.svg';
 
@@ -214,18 +214,46 @@ const MedicineList = () => {
     const [dispatchStep, setDispatchStep] = useState(0);
     const [inputType, setInputType] = useState(null);
     const [currentStep, setCurrentStep] = useState(1);
-    const [selectedCategory, setSelectedCategory] = useState('None');
+    const [selectedCategory, setSelectedCategory] = useState('All');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [dispatchedMedicines, setDispatchedMedicines] = useState([]);
+    const [inventory, setInventory] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        // Fetch inventory from the backend
+        fetch("http://localhost:5000/api/get-inventory", {
+            method: 'GET',
+          credentials: 'include', // Ensure cookies/session data are sent
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch inventory");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            setInventory(data.inventory); // Update the state with inventory data
+          })
+          .catch((error) => {
+            setError(error.message);
+          });
+      }, []);
 
     const categories = [
-        'None',
-        'Pain Relief',
-        'Cold and Flu',
-        'Vitamins & Supplements',
-        'Prescription Medications',
-        'Herbal Remedies',
+        "All",
+        "Pain and Inflammation",
+        "Anti-Infectives",
+        "Cardiovascular",
+        "Respiratory",
+        "Gastrointestinal",
+        "Endocrine",
+        "Nervous System",
+        "Musculoskeletal",
+        "Dermatological",
+        "Miscellaneous"
     ];
 
     const medicines = [
@@ -257,9 +285,10 @@ const MedicineList = () => {
     ];
 
     const handleCategorySelect = (category) => {
-        setSelectedCategory(category);
-        setIsDropdownOpen(false);
+        setSelectedCategory(category); // Update the selected category
+        setIsDropdownOpen(false); // Close the dropdown
     };
+    
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value.toLowerCase());
@@ -291,10 +320,10 @@ const MedicineList = () => {
         setCurrentStep(1);
     };
 
-    const filteredMedicines = medicines.filter((medicine) =>
-        (selectedCategory === 'None' || medicine.category === selectedCategory) &&
-        (medicine.name.toLowerCase().includes(searchQuery) || medicine.id.toLowerCase().includes(searchQuery))
-    );
+    const filteredInventory = inventory.filter((item) => {
+        if (selectedCategory === 'All') return true; // Show all items
+        return item.medicine_group?.toLowerCase() === selectedCategory.toLowerCase();
+    });
 
     // Define styles for completed status
     const completedStatusStyles = {
@@ -360,6 +389,8 @@ const MedicineList = () => {
                     </div>
                     {/* Table */}
                     <div className='overflow-x-auto'>
+                        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+                        {inventory.length > 0 ? (
                         <table className='min-w-full bg-white font-semibold'>
                             <thead>
                                 <tr>
@@ -370,13 +401,10 @@ const MedicineList = () => {
                                         Medicine ID
                                     </th>
                                     <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                        Medicine Group
+                                    </th>
+                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                                         Stock (Ql)
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Completed Status
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Dispatch Status
                                     </th>
                                     <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                                         Dispatch
@@ -387,28 +415,23 @@ const MedicineList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredMedicines.map((medicine) => (
-                                    <tr key={medicine.id}>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{medicine.name}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{medicine.id}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{medicine.stock}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                                            <span className={completedStatusStyles[medicine.completedStatus]}>
-                                                {medicine.completedStatus}
-                                            </span>
-                                        </td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{medicine.dispatchStatus}</td>
+                                {filteredInventory.map((item, index) => (
+                                    <tr key={index}>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineName}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicineId}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineGroup}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.quantity}</td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
                                             <button
-                                                onClick={() => handleDispatchClick(medicine.id)}
-                                                className={`btn ${dispatchedMedicines.includes(medicine.id) ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-blue-500 text-white'} px-4 py-2 rounded`}
-                                                disabled={dispatchedMedicines.includes(medicine.id)}
+                                                onClick={() => handleDispatchClick(item.id)}
+                                                className={`btn ${dispatchedMedicines.includes(item.id) ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-blue-500 text-white'} px-4 py-2 rounded`}
+                                                disabled={dispatchedMedicines.includes(item.id)}
                                             >
                                                 Dispatch
                                             </button>
                                         </td>
                                         <td className='px-2 py-4   text-sm'>
-                                            <Link to={`/inventory/medicinelist/${medicine.id}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
+                                            <Link to={`/inventory/medicinedetails/${item.medicineId}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
                                                 View Full Details &gt;
                                             </Link>
                                         </td>
@@ -416,6 +439,9 @@ const MedicineList = () => {
                                 ))}
                             </tbody>
                         </table>
+                        ) : (
+                            <p>No inventory records found.</p>
+                        )}
                     </div>
                 </div>
                 {dispatchStep === 1 && <DispatchModal onClose={() => setDispatchStep(0)} onNext={handleNext} />}
