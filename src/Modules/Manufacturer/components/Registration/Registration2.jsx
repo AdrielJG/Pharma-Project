@@ -23,6 +23,12 @@ const Registration2 = () => {
   const [error, setError] = useState(''); // For handling errors like password mismatch
   const navigate = useNavigate(); // To handle redirection after registration success
 
+  // Validate password complexity
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    return passwordRegex.test(password);
+  };
+
   // Fetch the email from session
   useEffect(() => {
     fetch('http://localhost:5000/api/get-session-email', {
@@ -62,8 +68,8 @@ const Registration2 = () => {
         return;
       } 
       
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters long');
+      if (!validatePassword(password)) {
+        setError('Password must be at least 6 characters long, include a number, and a special character');
         return;
       }
     }
@@ -91,6 +97,12 @@ const Registration2 = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === 'password' || name === 'confirmPassword') {
+      setErrors({ ...errors, passwordMismatch: false, weakPassword: false });  // Clear mismatch and weak password errors
+    }
+    if (name === 'email') {
+      setErrors({ ...errors, invalidEmail: false });  // Clear invalid email error
+    }
   };
 
   const handleFileChange = (e) => {
@@ -99,6 +111,11 @@ const Registration2 = () => {
   };
 
   const handleSubmit = async () => {
+    if (!validatePasswords()) {
+      setErrors({ ...errors, passwordMismatch: true });
+      return;
+    }
+
     const formDataToSend = new FormData();
     formDataToSend.append('accountType', formData.accountType);
     formDataToSend.append('name', formData.name);
@@ -159,10 +176,9 @@ const Registration2 = () => {
 
             <div className="mt-4 space-y-4">
               {[
-                { id: 'manufacturer', label: 'Manufacturer Account', img: manuImage, desc: 'You manufacture 🤯' },
-                { id: 'distributor', label: 'Distributor Account', img: disImage, desc: 'You distribute 🤯' },
-                { id: 'regulator', label: 'Regulator Account', img: regImage, desc: 'You regulate 🤯' },
-                { id: 'pharmacy', label: 'Pharmacy Account', img: pharImage, desc: 'You sell 🤯' },
+                { id: 'manufacturer', label: 'Manufacturer Account', img: manuImage},
+                { id: 'regulator', label: 'Regulator Account', img: regImage},
+                { id: 'pharmacy', label: 'Pharmacy Account', img: pharImage},
               ].map(option => (
                 <div
                   key={option.id}
@@ -222,7 +238,7 @@ const Registration2 = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700">Password</label>
+                <label className="block text-gray-700">Password (6+ characters, include a number and a special character)</label>
                 <input
                   type="password"
                   name="password"

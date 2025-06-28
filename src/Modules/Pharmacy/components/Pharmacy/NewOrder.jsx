@@ -1,104 +1,313 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const OrdersTable = () => {
   const [inventory, setInventory] = useState([]);
   const [approvedRequests, setApprovedRequests] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [memoExists, setMemoExists] = useState({});
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadingOfferId, setUploadingOfferId] = useState(null);
+  const navigate = useNavigate();
 
+  // Fetch orders from backend
   useEffect(() => {
-    // Mock data for inventory and approved requests
-    setInventory([
-      {
-        id: 1,
-        name: "Medicine A",
-        stock: 100,
-        completedStatus: "Awaiting Offer",
-        offerDetails: null,
-      },
-      {
-        id: 2,
-        name: "Medicine B",
-        stock: 50,
-        completedStatus: "Offered",
-        offerDetails: {
-          deliveryType: "Partial",
-          message: "We can deliver 30 units out of 50.",
-        },
-      },
-    ]);
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/requests", {
+          credentials: "include", // Include session cookies
+        });
 
-    setApprovedRequests([
-      { id: 4, name: "Medicine D", quantity: 30, approvalDate: "2024-12-01" },
-      { id: 5, name: "Medicine E", quantity: 60, approvalDate: "2024-12-15" },
-    ]);
+        const data = await response.json();
+        if (response.ok) {
+          // Separate orders by status
+          setInventory(data); // Accepted
+        } else {
+          console.error("Error fetching requests:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      }
+    };
+
+    fetchRequests();
   }, []);
 
-  const handleViewOffer = (order) => {
-    setSelectedOrder(order);
-    setIsModalOpen(true);
+  const handleCancelOffer = async (offer, orderId) => {
+    console.log(offer.name); // Log offer name
+    console.log(offer._id); // Log offer ID
+  
+    try {
+      const response = await fetch("http://localhost:5000/update-status-cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          offer_name: offer.name, // Send only offer.name
+          offer_id: offer._id, // Send only offer._id
+        }),
+      });
+  
+      const data = await response.json();
+      console.log(data); // Log the response from the server
+  
+      if (response.ok) {
+        console.log("Success:", data.message);
+        alert("Status updated successfully!");
+  
+        // Reload the page after successful update
+        window.location.reload();
+      } else {
+        console.error("Error:", data.error || data.message);
+        alert(data.error || data.message);
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      alert("Failed to update status. Please try again.");
+    }
   };
 
-  const handleAcceptOffer = () => {
-    setOrderPlaced(true);
-    setIsModalOpen(false);
-    console.log("Offer Accepted for", selectedOrder.name);
+  const handleViewOffer = async (order) => {
+    if (!order || !order.orderid) {
+      console.error("Order is undefined or missing orderid.");
+      return;
+    }
+  
+    setSelectedOrder(order);
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/getOfferDetails?orderid=${order.orderid}`);
+  
+      if (!response.ok) {
+        throw new Error(`Error fetching offer details: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+  
+      if (!Array.isArray(data)) {
+        console.error("Invalid offer details format:", data);
+        return;
+      }
+  
+      setSelectedOrderDetails(data);
+      setIsModalOpen(true);
+      
+      // Check if memo exists
+      for (const offer of data) {
+        const memoExists = await checkMemoExists(offer._id);
+        offer.memoExists = memoExists;
+      }
+    } catch (error) {
+      console.error("Error fetching offer details:", error);
+    }
+  };
+    
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/requests/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ Status: newStatus }),
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Order ${orderId} status updated to ${newStatus}`);
+        setInventory((prev) =>
+          prev.filter((order) => order["order-id"] !== orderId)
+        );
+        if (newStatus === 2) {
+          setApprovedRequests((prev) => [
+            ...prev,
+            inventory.find((order) => order["order-id"] === orderId),
+          ]);
+        }
+      } else {
+        console.error("Failed to update order status");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
+  const handleAcceptOffer = async (offer) => {
+    if (!selectedOrder) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/acceptOffer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          offer_id: offer._id, // The ID of the offer being accepted
+          order_id: selectedOrder.orderid, // The ID of the order
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to accept offer");
+      }
+
+      const data = await response.json();
+      console.log("Offer accepted:", data);
+
+      // Close the modal and reload the page to reflect changes
+      setIsModalOpen(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error accepting offer:", error);
+      alert("Failed to accept offer. Please try again.");
+    }
+  };
+
+  const checkMemoExists = async (offerId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/checkMemo?filename=memo_${offerId}`);
+      const data = await response.json();
+      setMemoExists((prev) => ({ ...prev, [offerId]: data.exists }));
+    } catch (error) {
+      console.error("Error checking memo existence:", error);
+    }
   };
 
   const handleRejectOffer = () => {
-    setOrderPlaced(false);
-    setIsModalOpen(false);
-    console.log("Offer Rejected for", selectedOrder.name);
+    if (selectedOrder) {
+      updateOrderStatus(selectedOrder["order-id"], -1); // Status -1 = Rejected
+      setIsModalOpen(false);
+    }
   };
 
-  const filteredInventory = inventory.filter(
-    (item) => item.completedStatus !== "Accepted"
-  );
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUploadPaymentProof = async () => {
+    if (!selectedFile || !uploadingOfferId) return;
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("offer_id", uploadingOfferId);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/uploadPaymentProof", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Payment proof uploaded successfully!");
+        setIsUploadModalOpen(false);
+        setSelectedFile(null);
+        setUploadingOfferId(null);
+      } else {
+        alert("Failed to upload payment proof.");
+      }
+    } catch (error) {
+      console.error("Error uploading payment proof:", error);
+      alert("Failed to upload payment proof. Please try again.");
+    }
+  };
+
+  const handleDownloadInvoice = async (offerId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/invoices/invoice_${offerId}.pdf`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch invoice');
+      }
+  
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice_${offerId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+  
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      alert('Failed to download invoice. Please try again.');
+    }
+  };
+  
 
   return (
     <div className="p-5 bg-gray-100 min-h-screen">
       {/* Title and Place Order Button */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-            Orders
-          </h1>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-2">Orders</h1>
           <p className="text-gray-600">List of Order Requests.</p>
         </div>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600">
+        <Link
+          to="orderpage"
+          className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600"
+        >
           Place Order
-        </button>
+        </Link>
       </div>
 
       {/* Inventory Table */}
       <div className="bg-white shadow-md rounded-lg p-6">
-        {filteredInventory.length > 0 ? (
+        {inventory.length > 0 ? (
           <div className="overflow-x-auto border border-gray-200 rounded-lg">
             <table className="w-full text-left table-auto">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-2 text-gray-700">Medicine Name</th>
-                  <th className="px-4 py-2 text-gray-700">Medicine ID</th>
+                  <th className="px-4 py-2 text-gray-700">Medicine Group</th>
                   <th className="px-4 py-2 text-gray-700">Quantity</th>
                   <th className="px-4 py-2 text-gray-700">Status</th>
                   <th className="px-4 py-2 text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredInventory.map((item, idx) => (
+                {inventory.map((item, idx) => (
                   <tr
-                    key={item.id}
+                    key={item["order-id"]}
                     className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
-                    <td className="px-4 py-2">{item.name}</td>
-                    <td className="px-4 py-2">{item.id}</td>
-                    <td className="px-4 py-2">{item.stock}</td>
-                    <td className="px-4 py-2">{item.completedStatus}</td>
+                    <td className="px-4 py-2">{item.MedicineName}</td>
+                    <td className="px-4 py-2">{item.MedicineGroup}</td>
+                    <td className="px-4 py-2">{item.Quantity}</td>
                     <td className="px-4 py-2">
-                      {item.completedStatus === "Offered" && (
+                      {item.Status === 0
+                        ? "Awaiting Response"
+                        : item.Status === 1
+                        ? "Sent to Manufacturers"
+                        : item.Status === 2
+                        ? "Offered"
+                        : item.Status === 3
+                        ? "Offer Accepted"
+                        : item.Status === -1
+                        ? "Offer Rejected"
+                        : "Unknown Status"}
+                    </td>
+                    <td className="px-4 py-2">
+                      {item.Status === 2 && (
                         <button
                           className="text-teal-500 hover:underline"
+                          onClick={() => handleViewOffer(item)}
+                        >
+                          View Offer
+                        </button>
+                      )}
+                      {item.Status === 3 && (
+                        <button
+                          className="text-red-500 hover:underline"
                           onClick={() => handleViewOffer(item)}
                         >
                           View Offer
@@ -115,93 +324,145 @@ const OrdersTable = () => {
         )}
       </div>
 
-      {/* Approved Requests Table */}
-      <div className="mt-10 bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Approved Requests
-        </h2>
-        <p className="text-gray-600 mb-6">
-          List of approved medicine requests.
-        </p>
-        {approvedRequests.length > 0 ? (
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="w-full text-left table-auto">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 text-gray-700">Medicine Name</th>
-                  <th className="px-4 py-2 text-gray-700">Quantity</th>
-                  <th className="px-4 py-2 text-gray-700">Approval Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {approvedRequests.map((request, idx) => (
-                  <tr
-                    key={request.id}
-                    className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                  >
-                    <td className="px-4 py-2">{request.name}</td>
-                    <td className="px-4 py-2">{request.quantity}</td>
-                    <td className="px-4 py-2">{request.approvalDate}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-600">No approved requests found.</p>
-        )}
-      </div>
-
       {/* Modal for Offer Details */}
       {selectedOrder && isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full relative">
-            {/* Close Button */}
+          <div className="bg-white rounded-lg p-6 shadow-lg max-w-4xl w-full relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 focus:outline-none"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              ✖
             </button>
-
-            {/* Modal Content */}
             <h3 className="text-lg font-bold mb-4">Offer Details</h3>
-            <p>
-              <strong>Medicine Name:</strong> {selectedOrder.name}
-            </p>
-            <p>
-              <strong>Delivery Type:</strong>{" "}
-              {selectedOrder.offerDetails?.deliveryType || "N/A"}
-            </p>
-            <p>
-              <strong>Message:</strong>{" "}
-              {selectedOrder.offerDetails?.message || "No details available"}
-            </p>
-            <div className="mt-4 flex justify-end gap-4">
+
+            {/* Table Displaying Offer Details */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-200">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="px-4 py-2 border">Manufacturer Name</th>
+                    <th className="px-4 py-2 border">Quantity</th>
+                    <th className="px-4 py-2 border">Quotation</th>
+                    <th className="px-4 py-2 border">Delivery Date</th>
+                    <th className="px-4 py-2 border">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedOrderDetails && selectedOrderDetails.length > 0 ? (
+                    selectedOrderDetails.map((offer, index) => (
+                      <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                        <td className="px-4 py-2 border">{offer.name || "N/A"}</td>
+                        <td className="px-4 py-2 border">{offer.quantity || "N/A"}</td>
+                        <td className="px-4 py-2 border">
+                          {offer.quotation ? `$${offer.quotation}` : "Pending"}
+                        </td>
+                        <td className="px-4 py-2 border">
+                          {offer.delivery_date ? new Date(offer.delivery_date).toLocaleDateString() : "Not Set"}
+                        </td>
+                        <td className="px-4 py-2 border flex gap-2 justify-center">
+                          {offer.status === 1 && (
+                            <>
+                              <button
+                                className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600"
+                                onClick={() => handleAcceptOffer(offer)}
+                              >
+                                Accept
+                              </button>
+                              <button
+                                className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                                onClick={() => handleRejectOffer(offer)}
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          {offer.status === 2 && (
+                        <>
+                          <button
+                            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                            onClick={() => handleCancelOffer(offer)}
+                          >
+                            Cancel Offer
+                          </button>
+                          {memoExists[offer._id] && (
+                            <>
+                              <a
+                                href={`http://localhost:5000/memo/memo_${offer._id}.pdf`}
+                                className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 ml-2"
+                                download={`memo_${offer._id}.pdf`}
+                              >
+                                Download Memo
+                              </a>
+                              <button
+                                className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 ml-2"
+                                onClick={() => {
+                                  setUploadingOfferId(offer._id);
+                                  setIsUploadModalOpen(true);
+                                }}
+                              >
+                                Upload Payment Proof
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+                      {offer.status === 3 && (
+                        <>
+                          <p className="text-green-600 text-center py-4">Payment Made. Please wait for Payment Confirmation.</p>
+                        </>
+                      )}
+                      {offer.status === 5 && (
+                        <div className="flex gap-2">
+                          <button
+                            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                            onClick={() => handleDownloadInvoice(offer._id)}
+                          >
+                            Download Invoice
+                          </button>
+                          <button
+                            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                            onClick={() => navigate("/ordersP")}
+                          >
+                            Go to Orders
+                          </button>
+                        </div>
+                      )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4 text-gray-500">
+                        No offers available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}    
+
+      {/* Modal for Upload Payment Proof */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-bold mb-4">Upload Payment Proof</h3>
+            <input type="file" onChange={handleFileChange} accept="image/*" />
+            <div className="mt-4 flex justify-end">
               <button
-                className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600"
-                onClick={handleAcceptOffer}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 mr-2"
+                onClick={() => setIsUploadModalOpen(false)}
               >
-                Accept Offer
+                Cancel
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                onClick={handleRejectOffer}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                onClick={handleUploadPaymentProof}
               >
-                Reject Offer
+                Upload
               </button>
             </div>
           </div>

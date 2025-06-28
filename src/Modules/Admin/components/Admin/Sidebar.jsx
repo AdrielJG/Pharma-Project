@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import logo from '../../assets/Logo.png';
-import ProfileImage from '../../assets/profile.jpg';
+import ProfileImage from '../../assets/profile.jpeg'; // Default profile picture
 import Dots from '../../assets/svgs/threedot.png';
 import {
   FaTachometerAlt,
@@ -20,13 +20,12 @@ import { MdGroup } from 'react-icons/md';
 const menuItems = [
   { label: 'Dashboards', icon: <FaTachometerAlt />, path: '/dashboardA' },
   { label: 'User Management', icon: <FaUsers />, path: '/inventoryA' },
-  { label: 'Compliance Checks', icon: <FaClipboardCheck />, path: '/complianceA' },
   { label: 'Complaints/Feedback', icon: <FaCommentAlt />, path: '/feedbackA' },
   { label: 'Documents to be Verified', icon: <FaFileAlt />, path: '/docsA' },
   { label: 'Audit Logs', icon: <FaLock />, path: '/auditA' },
-  { label: 'Finance Management', icon: <FaMoneyCheckAlt />, path: '/financeA' },
   { label: 'Reports', icon: <FaFileInvoice />, path: '/reportsA' },
-  { label: 'Groups', icon: <MdGroup />, path: '/groupsA' },
+  { label: 'Inventory', icon: <FaFileInvoice />, path: '/medicineA' },
+  { label: 'Requests', icon: <MdGroup />, path: '/requestsA' },
   { label: 'Notifications', icon: <AiFillNotification />, path: '/notificationsA' },
 ];
 
@@ -34,11 +33,46 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [profileData, setProfileData] = useState({
+    profilePic: ProfileImage, // Default profile picture
+    username: 'Admin', // Default username
+    accountType: 'Administrator', // Default account type
+  });
   const dropdownRef = useRef(null);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/users/profile', {
+          method: 'GET',
+          credentials: 'include', // Include cookies for authentication
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Capitalize the first letter of account_type
+          const capitalizedAccountType =
+            data.account_type.charAt(0).toUpperCase() + data.account_type.slice(1);
+          setProfileData({
+            profilePic: data.profile_pic || ProfileImage, // Use fetched profile picture or default
+            username: data.name || 'Admin', // Use fetched username or default
+            accountType: capitalizedAccountType || 'Administrator', // Use capitalized account type or default
+          });
+        } else {
+          console.error('Failed to fetch profile data:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleProfileClick = () => {
     if (!isDropdownOpen) {
-      navigate('/profile');
+      navigate('/profileA');
     }
   };
 
@@ -115,10 +149,16 @@ const AdminSidebar = () => {
         onClick={handleProfileClick}
       >
         <div className="flex items-center gap-3">
-          <img src={ProfileImage} alt="Profile" className="w-12 h-12 rounded-full shadow-lg" />
+          <img
+            src={profileData.profilePic}
+            alt="Profile"
+            className="w-12 h-12 rounded-full shadow-lg"
+          />
           <div className="flex flex-col">
-            <h4 className="font-semibold text-lg">Admin</h4>
-            <h5 className="text-sm text-[#FED600] font-light">Administrator</h5>
+            <h4 className="font-semibold text-lg">{profileData.username}</h4>
+            <h5 className="text-sm text-[#FED600] font-light">
+              {profileData.accountType}
+            </h5>
           </div>
           <div className="ml-auto cursor-pointer" onClick={handleDotsClick}>
             <img src={Dots} alt="Menu" />
@@ -126,27 +166,27 @@ const AdminSidebar = () => {
         </div>
 
         {isDropdownOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute right-5 top-14 bg-white shadow-lg rounded-md w-44 py-2 z-10"
-        >
           <div
-            onClick={() => handleDropdownClick('/profile')}
-            className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+            ref={dropdownRef}
+            className="absolute right-5 top-14 bg-white shadow-lg rounded-md w-44 py-2 z-10"
           >
-            <FaUserCircle className="text-lg text-black" />
-            <span className="text-black">My Profile</span>
+            <div
+              onClick={() => handleDropdownClick('/profileA')}
+              className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+            >
+              <FaUserCircle className="text-lg text-black" />
+              <span className="text-black">My Profile</span>
+            </div>
+            <hr className="border-t border-gray-200 my-1" />
+            <div
+              onClick={handleLogout}
+              className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer text-red-500"
+            >
+              <FaSignOutAlt className="text-lg" />
+              <span>Logout</span>
+            </div>
           </div>
-          <hr className="border-t border-gray-200 my-1" />
-          <div
-            onClick={handleLogout} // Directly call the logout function here
-            className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer text-red-500"
-          >
-            <FaSignOutAlt className="text-lg" />
-            <span>Logout</span>
-          </div>
-        </div>
-      )}
+        )}
       </div>
 
       <div className="Nav w-full flex-1 flex flex-col">

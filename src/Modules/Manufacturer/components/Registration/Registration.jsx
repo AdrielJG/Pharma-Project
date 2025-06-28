@@ -24,9 +24,23 @@ const Registration = () => {
 
   const [errors, setErrors] = useState({
     passwordMismatch: false,  // To handle password mismatch
+    invalidEmail: false,      // To handle invalid email format
+    weakPassword: false,      // To handle weak password
   });
   
   const navigate = useNavigate(); // To redirect after submission
+
+  // Validate email format
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Validate password complexity
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    return passwordRegex.test(password);
+  };
 
   // Handle next step validation and progression
   const handleNextStep = () => {
@@ -36,10 +50,16 @@ const Registration = () => {
     }
 
     if (currentStep === 2) {
-      const { name, password, confirmPassword } = formData;
+      const { name, email, password, confirmPassword } = formData;
 
-      if (!name || !password || !confirmPassword) {
+      if (!name || !email || !password || !confirmPassword) {
         setError('Please fill out all required fields');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        setError('Please enter a valid email address');
+        setErrors({ ...errors, invalidEmail: true });
         return;
       }
 
@@ -49,8 +69,9 @@ const Registration = () => {
         return;
       }
 
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters long');
+      if (!validatePassword(password)) {
+        setError('Password must be at least 6 characters long and include at least one letter, one number, and one special character');
+        setErrors({ ...errors, weakPassword: true });
         return;
       }
     }
@@ -84,7 +105,10 @@ const Registration = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     if (name === 'password' || name === 'confirmPassword') {
-      setErrors({ ...errors, passwordMismatch: false });  // Clear mismatch error
+      setErrors({ ...errors, passwordMismatch: false, weakPassword: false });  // Clear mismatch and weak password errors
+    }
+    if (name === 'email') {
+      setErrors({ ...errors, invalidEmail: false });  // Clear invalid email error
     }
   };
 
@@ -152,10 +176,9 @@ const Registration = () => {
 
   // Options for account type selection
   const options = [
-    { id: 'Manufacturer', label: 'Manufacturer Account', img: manuImage, desc: 'You manufacture 🤯' },
-    { id: 'Distributor', label: 'Distributor Account', img: disImage, desc: 'You distribute 🤯' },
-    { id: 'Regulator', label: 'Regulator Account', img: regImage, desc: 'You regulate 🤯' },
-    { id: 'Pharmacy', label: 'Pharmacy Account', img: pharImage, desc: 'You sell 🤯' },
+    { id: 'manufacturer', label: 'Manufacturer Account', img: manuImage },
+    { id: 'regulator', label: 'Regulator Account', img: regImage },
+    { id: 'pharmacy', label: 'Pharmacy Account', img: pharImage },
   ];
 
   return (
@@ -213,7 +236,7 @@ const Registration = () => {
             {/* Form Fields */}
             <div className="mt-6 space-y-4">
               <div>
-                <label className="block text-gray-700">Name</label>
+                <label className="block text-gray-700">Full Name</label>
                 <input
                   type="text"
                   name="name"
@@ -233,9 +256,12 @@ const Registration = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                 />
+                {errors.invalidEmail && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid email address.</p>
+                )}
               </div>
               <div>
-                <label className="block text-gray-700">Password</label>
+                <label className="block text-gray-700">Password (6+ characters, include a number and a special character)</label>
                 <input
                   type="password"
                   name="password"
@@ -244,6 +270,9 @@ const Registration = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                 />
+                {errors.weakPassword && (
+                  <p className="text-red-500 text-sm mt-1">Password must be at least 6 characters long and include at least one letter, one number, and one special character.</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700">Confirm Password</label>
@@ -289,7 +318,7 @@ const Registration = () => {
             {/* Document Upload */}
             <div className="mt-6 space-y-4">
               <div>
-                <label className="block text-gray-700">Document 1</label>
+                <label className="block text-gray-700">Licence (Manufacturor/Distributor/Pharmacy/Regulator)</label>
                 <input
                   type="file"
                   name="document1"
@@ -298,7 +327,7 @@ const Registration = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700">Document 2</label>
+                <label className="block text-gray-700">Aadhaar Card (.pdf format)</label>
                 <input
                   type="file"
                   name="document2"
@@ -348,10 +377,10 @@ const Registration = () => {
                 <p className="text-gray-600">Password: <span className="text-gray-900">********</span></p>
               </div>
               <div className="border-b border-gray-200 py-2">
-                <p className="text-gray-600">Document 1: <span className="text-gray-900">{formData.document1 ? formData.document1.name : 'Not uploaded'}</span></p>
+                <p className="text-gray-600">Licence: <span className="text-gray-900">{formData.document1 ? formData.document1.name : 'Not uploaded'}</span></p>
               </div>
               <div className="border-b border-gray-200 py-2">
-                <p className="text-gray-600">Document 2: <span className="text-gray-900">{formData.document2 ? formData.document2.name : 'Not uploaded'}</span></p>
+                <p className="text-gray-600">Aadhaar: <span className="text-gray-900">{formData.document2 ? formData.document2.name : 'Not uploaded'}</span></p>
               </div>
             </div>
 

@@ -223,7 +223,7 @@ const MedicineList = () => {
 
     useEffect(() => {
         // Fetch inventory from the backend
-        fetch("http://localhost:5000/api/get-inventory", {
+        fetch("http://localhost:5000/api/get-pharinventory", {
             method: 'GET',
           credentials: 'include', // Ensure cookies/session data are sent
         })
@@ -347,11 +347,6 @@ const MedicineList = () => {
                         </h1>
                         <h3>List of medicines available for sales.</h3>
                     </div>
-                    <div>
-                        <Link to='addmedicine' className='border px-4 py-2 bg-red-500 text-white border-red-500 rounded'>
-                            &#43; Add New Item
-                        </Link>
-                    </div>
                 </div>
                 <div className='w-full'>
                     <div className='flex justify-between items-center mb-5'>
@@ -406,12 +401,6 @@ const MedicineList = () => {
                                     <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                                         Stock (Ql)
                                     </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Dispatch
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Action
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -421,20 +410,6 @@ const MedicineList = () => {
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicineId}</td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineGroup}</td>
                                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.quantity}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                                            <button
-                                                onClick={() => handleDispatchClick(item.id)}
-                                                className={`btn ${dispatchedMedicines.includes(item.id) ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-blue-500 text-white'} px-4 py-2 rounded`}
-                                                disabled={dispatchedMedicines.includes(item.id)}
-                                            >
-                                                Dispatch
-                                            </button>
-                                        </td>
-                                        <td className='px-2 py-4   text-sm'>
-                                            <Link to={`/inventory/medicinedetails/${item.medicineId}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
-                                                View Full Details &gt;
-                                            </Link>
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -28,21 +28,6 @@ const Reports = () => {
                         </div>
                     </div>
                 </a>
-
-                <a href="/sitereportA">
-                    <div className='bg-white flex flex-col items-center border-2 border-green-400 rounded-lg w-64 overflow-hidden pt-5 gap-1'>
-                        <img src={qualrec} alt="" className='w-10 mb-1'/>
-                        <h3 className='text-2xl font-bold text-center'>Site <br></br>Report</h3>
-                        <p className='font-semibold leading-none mb-2.5'></p>
-                        <div className='w-full py-1 bg-green-200 text-center '>
-                            <p>
-                                View Detailed Report 
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            
-            
         </div>
     </div>
     

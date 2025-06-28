@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import arrowdown from '../../assets/svgs/arrowdown.svg';
+import { ClipLoader } from 'react-spinners'; // Import a spinner component
 
 
 const DispatchModal = ({ onClose, onNext }) => (
@@ -220,27 +221,30 @@ const MedicineList = () => {
     const [dispatchedMedicines, setDispatchedMedicines] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // New loading state
 
     useEffect(() => {
-        // Fetch inventory from the backend
-        fetch("http://localhost:5000/api/get-inventory", {
-            method: 'GET',
-          credentials: 'include', // Ensure cookies/session data are sent
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch inventory");
+        const fetchInventory = async () => {
+            setIsLoading(true); // Set loading to true before fetching
+            try {
+                const response = await fetch("http://localhost:5000/api/get-inventory", {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch inventory");
+                }
+                const data = await response.json();
+                setInventory(data.inventory);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setIsLoading(false); // Set loading to false after fetching
             }
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
-            setInventory(data.inventory); // Update the state with inventory data
-          })
-          .catch((error) => {
-            setError(error.message);
-          });
-      }, []);
+        };
+
+        fetchInventory();
+    }, []);
 
     const categories = [
         "All",
@@ -387,62 +391,56 @@ const MedicineList = () => {
                             )}
                         </div>
                     </div>
-                    {/* Table */}
-                    <div className='overflow-x-auto'>
-                        {error && <p style={{ color: "red" }}>Error: {error}</p>}
-                        {inventory.length > 0 ? (
-                        <table className='min-w-full bg-white font-semibold'>
-                            <thead>
-                                <tr>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Medicine Name
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Medicine ID
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Medicine Group
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Stock (Ql)
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Dispatch
-                                    </th>
-                                    <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredInventory.map((item, index) => (
-                                    <tr key={index}>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineName}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicineId}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineGroup}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.quantity}</td>
-                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                                            <button
-                                                onClick={() => handleDispatchClick(item.id)}
-                                                className={`btn ${dispatchedMedicines.includes(item.id) ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-blue-500 text-white'} px-4 py-2 rounded`}
-                                                disabled={dispatchedMedicines.includes(item.id)}
-                                            >
-                                                Dispatch
-                                            </button>
-                                        </td>
-                                        <td className='px-2 py-4   text-sm'>
-                                            <Link to={`/inventory/medicinedetails/${item.medicineId}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
-                                                View Full Details &gt;
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        ) : (
-                            <p>No inventory records found.</p>
-                        )}
-                    </div>
+                    {/* Loading Spinner */}
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <ClipLoader color="#009099" size={50} />
+                        </div>
+                    ) : (
+                        <div className='overflow-x-auto'>
+                            {error && <p style={{ color: "red" }}>Error: {error}</p>}
+                            {inventory.length > 0 ? (
+                                <table className='min-w-full bg-white font-semibold'>
+                                    <thead>
+                                        <tr>
+                                            <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                Medicine Name
+                                            </th>
+                                            <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                Medicine ID
+                                            </th>
+                                            <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                Medicine Group
+                                            </th>
+                                            <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                Stock (Ql)
+                                            </th>
+                                            <th className='px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredInventory.map((item, index) => (
+                                            <tr key={index}>
+                                                <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineName}</td>
+                                                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.medicineId}</td>
+                                                <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{item.medicineGroup}</td>
+                                                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{item.quantity}</td>
+                                                <td className='px-2 py-4   text-sm'>
+                                                    <Link to={`/inventory/medicinedetails/${item.medicineId}`} className='px-3 py-1  text-black rounded hover:text-blue-700'>
+                                                        View Full Details &gt;
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p>No inventory records found.</p>
+                            )}
+                        </div>
+                    )}
                 </div>
                 {dispatchStep === 1 && <DispatchModal onClose={() => setDispatchStep(0)} onNext={handleNext} />}
                 {dispatchStep === 2 && <InputModal type={inputType} onClose={() => setDispatchStep(0)} onProceed={handleProceed} />}

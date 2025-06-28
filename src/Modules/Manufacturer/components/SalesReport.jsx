@@ -37,40 +37,47 @@ const SalesReport = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newSale, setNewSale] = useState({
-    date_time: new Date().toISOString(),
-    amount: '',
+    shipping_date: new Date().toISOString(),
+    quotation: '',
     user_email: '',
     medicine_name: '',
     quantity: '',
     group: '',
     payment_method: 'Cash',
     status: 'Completed',
-    customer_name: '',
+    pharmacy_name: '',
     notes: '',
   });
 
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/sales');
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          const sortedData = data.sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
-          setSalesData(sortedData);
-          setFilteredData(sortedData);
-
-          const medicineNames = [...new Set(sortedData.map((item) => item.medicine_name))].filter(Boolean);
-          const customerNames = [...new Set(sortedData.map((item) => item.customer_name))].filter(Boolean);
-
-          setDropdownOptions({ medicineNames, customerNames });
-        } else {
-          console.error('Expected an array but got:', data);
-        }
+          const response = await fetch('http://localhost:5000/api/sales', {
+              credentials: 'include', // Include cookies in the request
+          });
+          const data = await response.json();
+  
+          if (Array.isArray(data)) {
+              // Process the data as an array
+              const sortedData = data.sort((a, b) => new Date(a.shipping_date) - new Date(b.shipping_date));
+              setSalesData(sortedData);
+              setFilteredData(sortedData);
+  
+              const medicineNames = [...new Set(sortedData.map((item) => item.medicine_name))].filter(Boolean);
+              const customerNames = [...new Set(sortedData.map((item) => item.pharmacy_name))].filter(Boolean);
+  
+              setDropdownOptions({ medicineNames, customerNames });
+          } else {
+              // Handle the case where the response is not an array (e.g., an error object)
+              console.error('Expected an array but got:', data);
+              if (data.error) {
+                  alert(data.error); // Show an alert or handle the error in the UI
+              }
+          }
       } catch (error) {
-        console.error('Error fetching sales data:', error);
+          console.error('Error fetching sales data:', error);
       }
-    };
+  };
 
     fetchSalesData();
   }, []);
@@ -81,7 +88,7 @@ const SalesReport = () => {
 
       if (filters.date) {
         updatedData = updatedData.filter((order) => {
-          const orderDate = new Date(order.date_time).toISOString().split('T')[0];
+          const orderDate = new Date(order.shipping_date).toISOString().split('T')[0];
           return orderDate === filters.date;
         });
       }
@@ -91,7 +98,7 @@ const SalesReport = () => {
       }
 
       if (filters.customerName) {
-        updatedData = updatedData.filter((order) => order.customer_name === filters.customerName);
+        updatedData = updatedData.filter((order) => order.pharmacy_name === filters.customerName);
       }
 
       setFilteredData(updatedData);
@@ -100,15 +107,21 @@ const SalesReport = () => {
     applyFilters();
   }, [filters, salesData]);
 
-  const groupDataByMonth = (data) => {
+  const groupDataByDay = (data) => {
     const groupedData = {};
     data.forEach((order) => {
-      const monthStart = startOfMonth(new Date(order.date_time));
-      const rangeLabel = `${format(monthStart, 'MMM yyyy')}`;
-      if (!groupedData[rangeLabel]) {
-        groupedData[rangeLabel] = 0;
+      // Format the date to a daily label (e.g., "2023-10-15")
+      const dayLabel = new Date(order.shipping_date).toISOString().split('T')[0];
+      if (!groupedData[dayLabel]) {
+        groupedData[dayLabel] = 0;
       }
-      groupedData[rangeLabel] += order.amount;
+      // Convert quotation to an integer before adding
+      const quotationValue = parseInt(order.quotation, 10);
+      if (!isNaN(quotationValue)) {
+        groupedData[dayLabel] += quotationValue;
+      } else {
+        console.warn('Invalid quotation value:', order.quotation);
+      }
     });
     return groupedData;
   };
@@ -117,32 +130,34 @@ const SalesReport = () => {
     if (filteredData.length > 0) {
       let lineData, barData;
       const isFiltered = filters.date || filters.medicineName || filters.customerName;
-
+  
       if (isFiltered) {
+        // For filtered data, show daily sales
         lineData = {
           labels: filteredData.map((order) =>
-            new Intl.DateTimeFormat('en-GB').format(new Date(order.date_time))
+            new Intl.DateTimeFormat('en-GB').format(new Date(order.shipping_date))
           ),
           datasets: [
             {
               label: 'Sales Made',
-              data: filteredData.map((order) => order.amount),
+              data: filteredData.map((order) => parseInt(order.quotation, 10)), // Convert to integer
               fill: false,
               borderColor: '#009099',
               borderWidth: 2,
             },
           ],
         };
-
+  
         const aggregateData = filteredData.reduce((acc, order) => {
-          const date = new Intl.DateTimeFormat('en-GB').format(new Date(order.date_time));
+          const date = new Intl.DateTimeFormat('en-GB').format(new Date(order.shipping_date));
           if (!acc[date]) {
             acc[date] = 0;
           }
-          acc[date] += order.amount;
+          // Convert quotation to an integer before adding
+          acc[date] += parseInt(order.quotation, 10);
           return acc;
         }, {});
-
+  
         barData = {
           labels: Object.keys(aggregateData),
           datasets: [
@@ -154,8 +169,9 @@ const SalesReport = () => {
           ],
         };
       } else {
-        const groupedData = groupDataByMonth(filteredData);
-
+        // For unfiltered data, group by day
+        const groupedData = groupDataByDay(filteredData);
+  
         lineData = {
           labels: Object.keys(groupedData),
           datasets: [
@@ -168,19 +184,19 @@ const SalesReport = () => {
             },
           ],
         };
-
+  
         barData = {
           labels: Object.keys(groupedData),
           datasets: [
             {
-              label: 'Total Sales Per Month',
+              label: 'Total Sales Per Day',
               data: Object.values(groupedData),
               backgroundColor: 'rgba(0, 144, 153, 0.8)',
             },
           ],
         };
       }
-
+  
       setLineChartData(lineData);
       setBarChartData(barData);
     } else {
@@ -230,15 +246,7 @@ const SalesReport = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-semibold text-[#333333]">Sales Report</h2>
-          <p className="text-sm text-[#666666]">Sales-related report of the pharmacy.</p>
-        </div>
-        <div>
-          <button
-            className="px-4 py-2 bg-[#009099] text-white rounded-md"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Add Sale
-          </button>
+          <p className="text-sm text-[#666666]">Sales-related report of the manufacturer.</p>
         </div>
       </div>
 
@@ -250,16 +258,16 @@ const SalesReport = () => {
             <div className="space-y-4">
               <input
                 type="datetime-local"
-                name="date_time"
-                value={newSale.date_time}
+                name="shipping_date"
+                value={newSale.shipping_date}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
               <input
                 type="text"
-                name="amount"
-                placeholder="Amount"
-                value={newSale.amount}
+                name="quotation"
+                placeholder="quotation"
+                value={newSale.quotation}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
@@ -316,9 +324,9 @@ const SalesReport = () => {
               </select>
               <input
                 type="text"
-                name="customer_name"
+                name="pharmacy_name"
                 placeholder="Customer Name"
-                value={newSale.customer_name}
+                value={newSale.pharmacy_name}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded"
               />
@@ -403,7 +411,7 @@ const SalesReport = () => {
                 <tr>
                   <th className="border-b-2 pb-2">Customer Name</th>
                   <th className="border-b-2 pb-2">Date/Time</th>
-                  <th className="border-b-2 pb-2">Amount</th>
+                  <th className="border-b-2 pb-2">quotation</th>
                   <th className="border-b-2 pb-2">Medicine Name</th>
                 </tr>
               </thead>
@@ -411,11 +419,11 @@ const SalesReport = () => {
                 {filteredData.length > 0 ? (
                   filteredData.map((order, index) => (
                     <tr key={index}>
-                      <td className="border-b py-2">{order.customer_name || 'N/A'}</td>
+                      <td className="border-b py-2">{order.pharmacy_name || 'N/A'}</td>
                       <td className="border-b py-2">
-                        {new Intl.DateTimeFormat('en-GB').format(new Date(order.date_time))}
+                        {new Intl.DateTimeFormat('en-GB').format(new Date(order.shipping_date))}
                       </td>
-                      <td className="border-b py-2">${order.amount}</td>
+                      <td className="border-b py-2">${order.quotation}</td>
                       <td className="border-b py-2">{order.medicine_name}</td>
                     </tr>
                   ))

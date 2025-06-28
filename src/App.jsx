@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './App.css';
+import ProtectedRoute from "./ProtectedRoute"; // Import Protected Route
+import { AuthProvider } from "./AuthContext";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
@@ -22,6 +24,7 @@ import Notification from './Modules/Manufacturer/components/Notification';
 import DisOrders from './Modules/Manufacturer/components/DisOrders';
 import DispatchedOrders from './Modules/Manufacturer/components/DispatchedOrders';
 import Registration from './Modules/Manufacturer/components/Registration/Registration';
+import RequestsPage from './Modules/Manufacturer/components/Requests';
 import OrderDetails from './Modules/Manufacturer/components/OrderDetails';
 import ProfilePage from './Modules/Manufacturer/components/ProfilePage'
 import ContactUs from './Modules/Manufacturer/components/ContactUs';
@@ -84,6 +87,7 @@ import MedicineDetailsP from './Modules/Pharmacy/components/Inventory/MedicineDe
 import AddMedicineP from './Modules/Pharmacy/components/Inventory/AddMedicine';
 import MedicineGroupsP from './Modules/Pharmacy/components/Inventory/MedicineGroups';
 import ConfigurationP from './Modules/Pharmacy/components/Pharmacy/Configuration';
+import OrderPageP from './Modules/Pharmacy/components/Pharmacy/OrderPage';
 import HomeP from './Modules/Pharmacy/components/Pharmacy/Home';
 import LoginP from './Modules/Pharmacy/components/Pharmacy/Login';
 import ComplianceRecordsP from './Modules/Pharmacy/components/ComplianceRecords';
@@ -123,147 +127,167 @@ import ScheduledA from './Modules/Admin/components/Admin/ScheduledComp';
 import FeedbackA from './Modules/Admin/components/Admin/Feedback';
 import FinanceA from './Modules/Admin/components/Admin/Finance';
 import AuditA from './Modules/Admin/components/Admin/Audit';
+import RequestsA from './Modules/Admin/components/Admin/Requests';
+import MedicineListA from './Modules/Admin/components/Admin/InventoryList';
 import UserReportA from './Modules/Admin/components/Admin/UserReports';
 import SiteReportA from './Modules/Admin/components/Admin/SiteReports';
 import DocumentVerificationA from './Modules/Admin/components/Admin/Documents';
 import ChatInterfaceA from './Modules/Admin/components/Admin/ChatInterface';
 
+import Unauthorized from './Unauthorized'
 import NotVerified from './Notverified';
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <Router>
-      <Routes>
-        {/* Route for login page */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/registration2" element={<Registration2 />} />
-        <Route path="/" element={<Home />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Route for login page */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/registration2" element={<Registration2 />} />
+          <Route path="/" element={<Home />} />
 
-        <Route path="/notverified" element={<NotVerified />} />
+          <Route path="/notverified" element={<NotVerified />} />
 
-        {/* Routes for the rest of the application */}
-        {/* Manufacturer */}
-        <Route path="/" element={<Layout />}>
-          <Route path="/track" element={<OrderDetails />} />
-          <Route path="/notifications" element={<Notification />} />
-          <Route path="/disorder" element={<DisOrders />} />
-          <Route path="/dispatch" element={<DispatchedOrders />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/configuration" element={<Configuration />} />
-          <Route path="/inventory/medicinelist" element={<MedicineList />} />
-          <Route path="/inventory/medicinegroups" element={<MedicineGroups />} />
-          <Route path="/inventory/medicinelist/addmedicine" element={<AddMedicine />} />
-          <Route path="/inventory/medicinedetails/:id" element={<MedicineDetails />} />
-          <Route path="/reports" element={<SalesReport />} />
-          <Route path="/compliance" element={<ComplianceRecords />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/orders" element={<OngoingOrders />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/chat" element={<ChatInterface />} />
-          <Route path="/chat/:id" element={<ChatInterface />} />
-        </Route>
+          {/* Routes for the rest of the application */}
+          {/* Manufacturer */}
+          <Route element={<ProtectedRoute allowedRoles={["manufacturer"]} />}>
+            <Route path="/" element={<Layout />}>
+              <Route path="/track" element={<OrderDetails />} />
+              <Route path="/notifications" element={<Notification />} />
+              <Route path="/disorder" element={<DisOrders />} />
+              <Route path="/dispatch" element={<DispatchedOrders />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/configuration" element={<Configuration />} />
+              <Route path="/inventory/medicinelist" element={<MedicineList />} />
+              <Route path="/inventory/medicinegroups" element={<MedicineGroups />} />
+              <Route path="/inventory/medicinelist/addmedicine" element={<AddMedicine />} />
+              <Route path="/inventory/medicinedetails/:id" element={<MedicineDetails />} />
+              <Route path="/reports" element={<SalesReport />} />
+              <Route path="/compliance" element={<ComplianceRecords />} />
+              <Route path="/requests" element={<RequestsPage />} />
+              <Route path="/groups" element={<Groups />} />
+              <Route path="/orders" element={<OngoingOrders />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/contactus" element={<ContactUs />} />
+              <Route path="/chat" element={<ChatInterface />} />
+              <Route path="/chat/:id" element={<ChatInterface />} />
+            </Route>
+          
+          </Route>
+          {/* Distributer */}
+          <Route element={<ProtectedRoute allowedRoles={["distributor"]} />}>
+            <Route path="/" element={<LayoutD />}>
+              <Route path="/notificationsD" element={<NotificationD />} />
+              <Route path="/dashboardD" element={<DashboardD />} />
+              <Route path="/configurationD" element={<ConfigurationD />} />
+              <Route path="/reportsD" element={<ReportsD />} />
+              <Route path="/complianceD" element={<ComplianceRecordsD />} />
+              <Route path="/groupsD" element={<GroupsD />} />
+              <Route path="/disreportD" element={<DispatchReportD />} />
+              <Route path="/qsalesD" element={<QReportD />} />
+              <Route path="/contactusD" element={<ContactUsD />} />
+              <Route path="/profileD" element={<ProfileD />} />
+              <Route path="/qualityrecD" element={<QualityRecD />} />
+              <Route path="/registration2D" element={<Registration2D />} />
+              <Route path="/inventoryoverviewD" element={<InventoryOverviewD/>} />
+              <Route path="/financialsD" element={<FinancialsD />} />
+              <Route path="/shipmentD" element={<ShipmentPerformanceD />} />
+              <Route path="/supplierD" element={<SupplierManagementD />} />
+              <Route path="/ordersD" element={<OrdersD />} />
+              <Route path="/pendingordersD" element={<PendingOrdersD />} />
+              <Route path="/dispatchedordersD" element={<DispatchedOrdersD />} />
+              <Route path="/medicine/:id" component={MedicineDetails} />
+              <Route path="/chatD" element={<ChatInterfaceD />} />   
+              <Route path="/chatD/:id" element={<ChatInterfaceD />} />
+            </Route>
+          </Route>
 
-        {/* Distributer */}
-        <Route path="/" element={<LayoutD />}>
-          <Route path="/notificationsD" element={<NotificationD />} />
-          <Route path="/dashboardD" element={<DashboardD />} />
-          <Route path="/configurationD" element={<ConfigurationD />} />
-          <Route path="/reportsD" element={<ReportsD />} />
-          <Route path="/complianceD" element={<ComplianceRecordsD />} />
-          <Route path="/groupsD" element={<GroupsD />} />
-          <Route path="/disreportD" element={<DispatchReportD />} />
-          <Route path="/qsalesD" element={<QReportD />} />
-          <Route path="/contactusD" element={<ContactUsD />} />
-          <Route path="/profileD" element={<ProfileD />} />
-          <Route path="/qualityrecD" element={<QualityRecD />} />
-          <Route path="/registration2D" element={<Registration2D />} />
-          <Route path="/inventoryoverviewD" element={<InventoryOverviewD/>} />
-          <Route path="/financialsD" element={<FinancialsD />} />
-          <Route path="/shipmentD" element={<ShipmentPerformanceD />} />
-          <Route path="/supplierD" element={<SupplierManagementD />} />
-          <Route path="/ordersD" element={<OrdersD />} />
-          <Route path="/pendingordersD" element={<PendingOrdersD />} />
-          <Route path="/dispatchedordersD" element={<DispatchedOrdersD />} />
-          <Route path="/medicine/:id" component={MedicineDetails} />
-          <Route path="/chatD" element={<ChatInterfaceD />} />   
-          <Route path="/chatD/:id" element={<ChatInterfaceD />} />
-        </Route>
+          {/* Regulator */}
+          <Route element={<ProtectedRoute allowedRoles={["regulator"]} />}>
+            <Route path="/" element={<LayoutR />}>
+              <Route path="/notificationsR" element={<NotificationR />} />
+              <Route path="/dashboardR" element={<DashboardR />} />
+              <Route path="/configurationR" element={<ConfigurationR />} />
+              <Route path="/reportsR" element={<ReportsR />} />
+              <Route path="/complianceR" element={<ComplianceRecordsR />} />
+              <Route path="/groupsR" element={<GroupsR />} />
+              <Route path="/salesR" element={<SalesReportR />} />
+              <Route path="/qsalesR" element={<QReportR />} />
+              <Route path="/contactusR" element={<ContactUsR />} />
+              <Route path="/profileR" element={<ProfileR />} />
+              <Route path="/qualityrecR" element={<QualityRecR />} />
+              <Route path="/registration2R" element={<Registration2R />} />
+              <Route path="/dashboard_distR" element={<DistributorDashboardR />} />
+              <Route path="/chatR" element={<ChatInterfaceR />} />
+              <Route path="/chatR/:id" element={<ChatInterfaceR />} />
+            </Route>
+          </Route>
 
-        {/* Regulator */}
-        <Route path="/" element={<LayoutR />}>
-          <Route path="/notificationsR" element={<NotificationR />} />
-          <Route path="/dashboardR" element={<DashboardR />} />
-          <Route path="/configurationR" element={<ConfigurationR />} />
-          <Route path="/reportsR" element={<ReportsR />} />
-          <Route path="/complianceR" element={<ComplianceRecordsR />} />
-          <Route path="/groupsR" element={<GroupsR />} />
-          <Route path="/salesR" element={<SalesReportR />} />
-          <Route path="/qsalesR" element={<QReportR />} />
-          <Route path="/contactusR" element={<ContactUsR />} />
-          <Route path="/profileR" element={<ProfileR />} />
-          <Route path="/qualityrecR" element={<QualityRecR />} />
-          <Route path="/registration2R" element={<Registration2R />} />
-          <Route path="/dashboard_distR" element={<DistributorDashboardR />} />
-          <Route path="/chatR" element={<ChatInterfaceR />} />
-          <Route path="/chatR/:id" element={<ChatInterfaceR />} />
-        </Route>
+          {/* Pharmacy */}
+          <Route element={<ProtectedRoute allowedRoles={["pharmacy"]} />}>
+            <Route path="/" element={<LayoutP />}>
+              <Route path="/trackP" element={<OrderDetailsP />} />
+              <Route path="/notificationsP" element={<NotificationP />} />
+              <Route path="/disorderP" element={<DisOrdersP />} />
+              <Route path="/dispatchP" element={<DispatchedOrdersP />} />
+              <Route path="/dashboardP" element={<DashboardP />} />
+              <Route path="/inventoryP" element={<InventoryP />} />
+              <Route path="/configurationP" element={<ConfigurationP />} />
+              <Route path="/inventoryP/medicinelist" element={<MedicineListP />} />
+              <Route path="/inventoryP/medicinegroups" element={<MedicineGroupsP />} />
+              <Route path="/inventoryP/groupsmedicinelist/:groupId" element={<GroupsMedicinesListP />} />
+              <Route path="/inventoryP/medicinelist/addmedicine" element={<AddMedicineP />} />
+              <Route path="/inventoryP/medicinelist/:id" element={<MedicineDetailsP />} />
+              <Route path="/reportsP" element={<SalesReportP />} />
+              <Route path="/complianceP" element={<ComplianceRecordsP />} />
+              <Route path="/groupsP" element={<GroupsP />} />
+              <Route path="/ordersP" element={<OngoingOrdersP />} />
+              <Route path="/ordernowP" element={<NewOrdersP />} />
+              <Route path="/ordernowP/orderpage" element={<OrderPageP />} />
+              <Route path="/profileP" element={<ProfilePageP />} />
+              <Route path="/contactusP" element={<ContactUsP />} />
+              <Route path="/chatP" element={<ChatInterfaceP />} />
+              <Route path="/chatP/:id" element={<ChatInterfaceP />} />
+            </Route>
+          </Route>
 
-        {/* Pharmacy */}
-        <Route path="/" element={<LayoutP />}>
-          <Route path="/trackP" element={<OrderDetailsP />} />
-          <Route path="/notificationsP" element={<NotificationP />} />
-          <Route path="/disorderP" element={<DisOrdersP />} />
-          <Route path="/dispatchP" element={<DispatchedOrdersP />} />
-          <Route path="/dashboardP" element={<DashboardP />} />
-          <Route path="/inventoryP" element={<InventoryP />} />
-          <Route path="/configurationP" element={<ConfigurationP />} />
-          <Route path="/inventoryP/medicinelist" element={<MedicineListP />} />
-          <Route path="/inventoryP/medicinegroups" element={<MedicineGroupsP />} />
-          <Route path="/inventoryP/groupsmedicinelist/:groupId" element={<GroupsMedicinesListP />} />
-          <Route path="/inventoryP/medicinelist/addmedicine" element={<AddMedicineP />} />
-          <Route path="/inventoryP/medicinelist/:id" element={<MedicineDetailsP />} />
-          <Route path="/reportsP" element={<SalesReportP />} />
-          <Route path="/complianceP" element={<ComplianceRecordsP />} />
-          <Route path="/groupsP" element={<GroupsP />} />
-          <Route path="/ordersP" element={<OngoingOrdersP />} />
-          <Route path="/ordernowP" element={<NewOrdersP />} />
-          <Route path="/profileP" element={<ProfilePageP />} />
-          <Route path="/contactusP" element={<ContactUsP />} />
-          <Route path="/chatP" element={<ChatInterfaceP />} />
-          <Route path="/chatP/:id" element={<ChatInterfaceP />} />
-        </Route>
-
-        {/* Admin */}
-        <Route path="/" element={<LayoutA />}>
-          <Route path="/notificationsA" element={<NotificationA />} />
-          <Route path="/dashboardA" element={<DashboardA />} />
-          <Route path="/configurationA" element={<ConfigurationA />} />
-          <Route path="/reportsA" element={<ReportsA />} />
-          <Route path="/inventoryA" element={<ComplianceRecordsA />} />
-          <Route path="/compliance/compliancelistA" element={<ComplianceListA />} />
-          <Route path="/compliance/scheduledA" element={<ScheduledA />} />
-          <Route path="/feedbackA" element={<FeedbackA />} />
-          <Route path="/financeA" element={<FinanceA />} />
-          <Route path="/auditA" element={<AuditA />} />
-          <Route path="/userreportA" element={<UserReportA />} />
-          <Route path="/sitereportA" element={<SiteReportA />} />
-          <Route path="/docsA" element={<DocumentVerificationA />} />
-          <Route path="/groupsA" element={<GroupsA />} />
-          <Route path="/complianceA" element={<InventoryA />} />
-          <Route path="/qsalesA" element={<QReportA />} />
-          <Route path="/contactusA" element={<ContactUsA />} />
-          <Route path="/profileA" element={<ProfileA />} />
-          <Route path="/qualityrecA" element={<QualityRecA />} />
-          <Route path="/registration2A" element={<Registration2A />} />
-          <Route path="/chatA/:id" element={<ChatInterfaceA />} />
-        </Route>
-      </Routes>
-    </Router>
+          {/* Admin */}
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/" element={<LayoutA />}>
+              <Route path="/notificationsA" element={<NotificationA />} />
+              <Route path="/dashboardA" element={<DashboardA />} />
+              <Route path="/configurationA" element={<ConfigurationA />} />
+              <Route path="/reportsA" element={<ReportsA />} />
+              <Route path="/inventoryA" element={<ComplianceRecordsA />} />
+              <Route path="/compliance/compliancelistA" element={<ComplianceListA />} />
+              <Route path="/compliance/scheduledA" element={<ScheduledA />} />
+              <Route path="/feedbackA" element={<FeedbackA />} />
+              <Route path="/financeA" element={<FinanceA />} />
+              <Route path="/auditA" element={<AuditA />} />
+              <Route path="/userreportA" element={<UserReportA />} />
+              <Route path="/sitereportA" element={<SiteReportA />} />
+              <Route path="/docsA" element={<DocumentVerificationA />} />
+              <Route path="/groupsA" element={<GroupsA />} />
+              <Route path="/complianceA" element={<InventoryA />} />
+              <Route path="/requestsA" element={<RequestsA />} />
+              <Route path="/medicineA" element={<MedicineListA />} />
+              <Route path="/qsalesA" element={<QReportA />} />
+              <Route path="/contactusA" element={<ContactUsA />} />
+              <Route path="/profileA" element={<ProfileA />} />
+              <Route path="/qualityrecA" element={<QualityRecA />} />
+              <Route path="/registration2A" element={<Registration2A />} />
+              <Route path="/chatA/:id" element={<ChatInterfaceA />} />
+            </Route>
+          </Route>
+          <Route path="/notauthorized" element={<Unauthorized />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

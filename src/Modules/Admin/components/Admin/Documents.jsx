@@ -134,13 +134,13 @@ const DocumentVerification = () => {
                   className="text-left p-3 text-sm font-medium text-gray-600 max-w-100px tracking-wider" 
                   style={{ width: '100px' }} // Fixed width for Document 1
                 >
-                  Document 1
+                  License
                 </th>
                 <th 
                   className="text-left p-3 text-sm font-medium text-gray-600 tracking-wider" 
                   style={{ width: '200px' }} // Fixed width for Document 2
                 >
-                  Document 2
+                  Aadhaar
                 </th>
                 <th className="text-left p-3 text-sm font-medium text-gray-600 tracking-wider">
                   View
@@ -173,7 +173,7 @@ const DocumentVerification = () => {
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
                         onClick={() => handleDownloadClick(document.document1)}
                       >
-                        View Document 1
+                        View Lincense
                       </button>
                     )}
                     {document.document2 && (
@@ -181,7 +181,7 @@ const DocumentVerification = () => {
                         className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
                         onClick={() => handleDownloadClick(document.document2)}
                       >
-                        View Document 2
+                        View Aadhaar
                       </button>
                     )}
                   </td>

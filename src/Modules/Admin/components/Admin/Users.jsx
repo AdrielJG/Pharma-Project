@@ -4,6 +4,7 @@ const Users = () => {
   const [verifiedUsers, setVerifiedUsers] = useState([]);
   const [rejectedUsers, setRejectedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [newsletterMessage, setNewsletterMessage] = useState("");
 
   // Function to fetch user data
   const fetchUsers = async () => {
@@ -57,6 +58,26 @@ const Users = () => {
     }
   };
 
+  // Function to send newsletter
+  const handleSendNewsletter = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/newsletter/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        setNewsletterMessage("Newsletter sent successfully!");
+      } else {
+        const result = await response.json();
+        setNewsletterMessage(result.message || "Failed to send newsletter.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setNewsletterMessage("An error occurred. Please try again.");
+    }
+  };
+
   // Fetch users on component mount
   useEffect(() => {
     fetchUsers();
@@ -85,7 +106,20 @@ const Users = () => {
           className="w-1/3 p-2 border border-gray-300 rounded"
           placeholder="Search Users..."
         />
+        <button
+          onClick={handleSendNewsletter}
+          className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-all"
+        >
+          Send Newsletter
+        </button>
       </div>
+
+      {/* Newsletter Message */}
+      {newsletterMessage && (
+        <div className="mb-5">
+          <p className="text-sm text-gray-700">{newsletterMessage}</p>
+        </div>
+      )}
 
       {/* Verified Users Table */}
       <div className="bg-white shadow-md rounded mb-5">
