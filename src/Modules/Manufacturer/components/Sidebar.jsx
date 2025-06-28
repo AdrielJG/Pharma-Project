@@ -42,7 +42,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users/profile', {
+        const response = await fetch('https://pharma-project-1.onrender.com/api/users/profile', {
           method: 'GET',
           credentials: 'include', // Include cookies for authentication
         });
@@ -87,7 +87,7 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/logout', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/logout', {
         method: 'POST',
         credentials: 'include', // Include cookies in the request
       });
@@ -105,7 +105,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/notifications', {
+        const response = await fetch('https://pharma-project-1.onrender.com/api/notifications', {
           method: 'GET',
           credentials: 'include',
         });

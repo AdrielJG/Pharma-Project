@@ -15,7 +15,7 @@ const Notification = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/notifications', {
+        const response = await fetch('https://pharma-project-1.onrender.com/api/notifications', {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -47,7 +47,7 @@ const Notification = () => {
   // Mark notification as read
   const markAsRead = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/notifications/${id}`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/notifications/${id}`, {
         method: 'PATCH',
         credentials: 'include',
         headers: {

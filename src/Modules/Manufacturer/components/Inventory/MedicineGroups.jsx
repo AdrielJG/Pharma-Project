@@ -21,7 +21,7 @@ const MedicineGroups = () => {
 
     // Fetch inventory data from backend
     useEffect(() => {
-        fetch("http://localhost:5000/api/get-inventory", {
+        fetch("https://pharma-project-1.onrender.com/api/get-inventory", {
             credentials: "include", // Ensure cookies/session data are sent
         })
             .then((response) => {

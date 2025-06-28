@@ -12,7 +12,7 @@ const Requests = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/get-requests", {
+        const response = await fetch("https://pharma-project-1.onrender.com/api/get-requests", {
           headers: { "Content-Type": "application/json" },
         });
         if (!response.ok) {
@@ -25,7 +25,7 @@ const Requests = () => {
           data.inventory.map(async (item) => {
             try {
               const usernameResponse = await fetch(
-                `http://localhost:5000/api/get-username?email=${item.Client}`,
+                `https://pharma-project-1.onrender.com/api/get-username?email=${item.Client}`,
                 {
                   headers: { "Content-Type": "application/json" },
                 }
@@ -67,7 +67,7 @@ const Requests = () => {
     console.log(order.MedicineName);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/get-manufacturers?medicineName=${order.MedicineName}`,
+        `https://pharma-project-1.onrender.com/api/get-manufacturers?medicineName=${order.MedicineName}`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -75,7 +75,7 @@ const Requests = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log(`Fetching: http://localhost:5000/api/get-manufacturers?medicineName=${order.MedicineName}`);
+      console.log(`Fetching: https://pharma-project-1.onrender.com/api/get-manufacturers?medicineName=${order.MedicineName}`);
       const data = await response.json();
       console.log(data);
   
@@ -122,7 +122,7 @@ const Requests = () => {
     console.log(payload);
     
     try {
-      const response = await fetch("http://localhost:5000/api/reqtoman", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/reqtoman", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

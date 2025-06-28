@@ -76,7 +76,7 @@ app.config['INVOICE_FOLDER'] = INVOICE_FOLDER
 # Ensure the upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True, origins=["http://localhost:5173", "https://pharmachain47.netlify.app"])
 
 # Secret key for session management
 app.secret_key = os.environ.get("SECRET_KEY") or "random_secret_key"

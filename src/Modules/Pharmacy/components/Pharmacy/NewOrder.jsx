@@ -18,7 +18,7 @@ const OrdersTable = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/requests", {
+        const response = await fetch("https://pharma-project-1.onrender.com/api/requests", {
           credentials: "include", // Include session cookies
         });
 
@@ -42,7 +42,7 @@ const OrdersTable = () => {
     console.log(offer._id); // Log offer ID
   
     try {
-      const response = await fetch("http://localhost:5000/update-status-cancel", {
+      const response = await fetch("https://pharma-project-1.onrender.com/update-status-cancel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const OrdersTable = () => {
     setSelectedOrder(order);
   
     try {
-      const response = await fetch(`http://localhost:5000/api/getOfferDetails?orderid=${order.orderid}`);
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/getOfferDetails?orderid=${order.orderid}`);
   
       if (!response.ok) {
         throw new Error(`Error fetching offer details: ${response.statusText}`);
@@ -110,7 +110,7 @@ const OrdersTable = () => {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/requests/${orderId}`,
+        `https://pharma-project-1.onrender.com/api/requests/${orderId}`,
         {
           method: "PATCH",
           headers: {
@@ -143,7 +143,7 @@ const OrdersTable = () => {
     if (!selectedOrder) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/acceptOffer", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/acceptOffer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -172,7 +172,7 @@ const OrdersTable = () => {
 
   const checkMemoExists = async (offerId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/checkMemo?filename=memo_${offerId}`);
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/checkMemo?filename=memo_${offerId}`);
       const data = await response.json();
       setMemoExists((prev) => ({ ...prev, [offerId]: data.exists }));
     } catch (error) {
@@ -199,7 +199,7 @@ const OrdersTable = () => {
     formData.append("offer_id", uploadingOfferId);
 
     try {
-      const response = await fetch("http://localhost:5000/api/uploadPaymentProof", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/uploadPaymentProof", {
         method: "POST",
         body: formData,
       });
@@ -220,7 +220,7 @@ const OrdersTable = () => {
 
   const handleDownloadInvoice = async (offerId) => {
     try {
-      const response = await fetch(`http://localhost:5000/invoices/invoice_${offerId}.pdf`);
+      const response = await fetch(`https://pharma-project-1.onrender.com/invoices/invoice_${offerId}.pdf`);
       if (!response.ok) {
         throw new Error('Failed to fetch invoice');
       }
@@ -388,7 +388,7 @@ const OrdersTable = () => {
                           {memoExists[offer._id] && (
                             <>
                               <a
-                                href={`http://localhost:5000/memo/memo_${offer._id}.pdf`}
+                                href={`https://pharma-project-1.onrender.com/memo/memo_${offer._id}.pdf`}
                                 className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 ml-2"
                                 download={`memo_${offer._id}.pdf`}
                               >

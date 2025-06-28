@@ -9,7 +9,7 @@ const Users = () => {
   // Function to fetch user data
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/users", {
         method: 'GET',
         headers: { "Content-Type": "application/json" },
       });
@@ -34,7 +34,7 @@ const Users = () => {
         verified: status,
       };
 
-      const response = await fetch("http://localhost:5000/api/ban-unban", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/ban-unban", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const Users = () => {
   // Function to send newsletter
   const handleSendNewsletter = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/newsletter/send", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/newsletter/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

@@ -63,7 +63,7 @@ const OrderPage = () => {
 
     const confirmOrder = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/order-medicine", {
+            const response = await fetch("https://pharma-project-1.onrender.com/api/order-medicine", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(medicineList),

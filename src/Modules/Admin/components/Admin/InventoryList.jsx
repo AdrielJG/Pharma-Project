@@ -10,12 +10,12 @@ const ManufacturersPharmaciesList = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/get-manufacturer-names")
+        fetch("https://pharma-project-1.onrender.com/api/get-manufacturer-names")
             .then((response) => response.json())
             .then((data) => setManufacturers(data.manufacturers))
             .catch((error) => setError(error.message));
 
-        fetch("http://localhost:5000/api/get-pharmacie-names")
+        fetch("https://pharma-project-1.onrender.com/api/get-pharmacie-names")
             .then((response) => response.json())
             .then((data) => setPharmacies(data.pharmacies))
             .catch((error) => setError(error.message));
@@ -27,7 +27,7 @@ const ManufacturersPharmaciesList = () => {
         setInventory([]); // Clear the inventory before fetching new data
 
         const fetchInventory = () => {
-            fetch(`http://localhost:5000/api/get-inventory-details/${email}`)
+            fetch(`https://pharma-project-1.onrender.com/api/get-inventory-details/${email}`)
                 .then((response) => response.json())
                 .then((data) => setInventory(data.inventory))
                 .catch((error) => setError(error.message))

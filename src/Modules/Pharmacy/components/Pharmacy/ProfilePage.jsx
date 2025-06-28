@@ -71,7 +71,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/users/profile", {
+        const response = await fetch("https://pharma-project-1.onrender.com/api/users/profile", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -108,7 +108,7 @@ const PersonalInfo = () => {
   // Submit updated data to API
   const handleSave = async (field) => {
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/users/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -153,7 +153,7 @@ const PersonalInfo = () => {
     formData.append("email", userData.email); // Send email to use as filename
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/upload-profile-pic", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/users/upload-profile-pic", {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -176,7 +176,7 @@ const PersonalInfo = () => {
   // Handle logout
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/logout", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/logout", {
         method: "POST",
         credentials: "include",
       });

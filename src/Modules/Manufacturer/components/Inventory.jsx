@@ -11,7 +11,7 @@ const Inventory = () => {
     useEffect(() => {
         const fetchInventoryCount = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/get-inventory', {
+                const response = await fetch('https://pharma-project-1.onrender.com/api/get-inventory', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

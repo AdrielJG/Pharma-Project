@@ -56,7 +56,7 @@ const Home = () => {
         e.preventDefault();
         console.log('Email:', email); // Log email to ensure it has a value
         try {
-            const response = await fetch('http://localhost:5000/api/newsletter/subscribe', {
+            const response = await fetch('https://pharma-project-1.onrender.com/api/newsletter/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

@@ -14,7 +14,7 @@ const Groups = () => {
 
   const fetchCurrentUser = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/get-session-email', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/get-session-email', {
         credentials: "include",
       });
       if (!response.ok) throw new Error('Failed to fetch current user email');
@@ -31,14 +31,14 @@ const Groups = () => {
 
   const fetchGroupsAndUsers = async () => {
     try {
-      const usersResponse = await fetch("http://localhost:5000/api/users", {
+      const usersResponse = await fetch("https://pharma-project-1.onrender.com/api/users", {
         method: "GET",
         credentials: "include",
       });
       const usersData = await usersResponse.json();
       setUsers(usersData.verified_users);
 
-      const groupsResponse = await fetch("http://localhost:5000/api/my-groups", {
+      const groupsResponse = await fetch("https://pharma-project-1.onrender.com/api/my-groups", {
         method: "GET",
         credentials: "include",
       });
@@ -62,7 +62,7 @@ const Groups = () => {
 
   const createGroupInBackend = async (newGroup) => {
     try {
-      const response = await fetch('http://localhost:5000/api/groups', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/groups', {
         method: 'POST',
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },

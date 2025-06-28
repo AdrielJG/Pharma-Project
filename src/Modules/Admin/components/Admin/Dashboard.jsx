@@ -17,12 +17,12 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch user stats
-        const statsResponse = await fetch('http://localhost:5000/api/user-stats');
+        const statsResponse = await fetch('https://pharma-project-1.onrender.com/api/user-stats');
         const statsData = await statsResponse.json();
         setUserStats(statsData);
 
         // Fetch inventory data with credentials
-        const inventoryResponse = await fetch('http://localhost:5000/api/get-inventory-all', {
+        const inventoryResponse = await fetch('https://pharma-project-1.onrender.com/api/get-inventory-all', {
           credentials: 'include', // Required for session cookies
         });
         if (!inventoryResponse.ok) throw new Error('Inventory fetch failed');
@@ -30,7 +30,7 @@ const Dashboard = () => {
         setInventoryData(inventoryJson);
 
         // Fetch pharmacy data
-        const pharmResponse = await fetch('http://localhost:5000/api/get-pharinventory-all', {
+        const pharmResponse = await fetch('https://pharma-project-1.onrender.com/api/get-pharinventory-all', {
           credentials: 'include', // Required for session cookies
         });
         if (!pharmResponse.ok) throw new Error('P-Inventory fetch failed');

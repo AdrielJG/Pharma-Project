@@ -28,7 +28,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/forgot-password', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Login = () => {
             <div className="w-full mb-4">
               <button className="flex items-center justify-center bg-white border border-gray-300 rounded-lg py-2 px-4 shadow-md hover:bg-gray-100 transition duration-300 ease-in-out w-full">
                 <img className="h-6 w-6 mr-2" alt="Google Logo" src={socialMediaLogo1} />
-                <a href="http://localhost:5000/login/google">Continue with Google</a>
+                <a href="https://pharma-project-1.onrender.com/login/google">Continue with Google</a>
               </button>
             </div>
             <div className="w-full mb-4 ">

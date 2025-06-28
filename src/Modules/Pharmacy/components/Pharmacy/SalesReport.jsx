@@ -52,7 +52,7 @@ const SalesReport = () => {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-          const response = await fetch('http://localhost:5000/api/pharsales', {
+          const response = await fetch('https://pharma-project-1.onrender.com/api/pharsales', {
               credentials: 'include', // Include cookies in the request
           });
           const data = await response.json();

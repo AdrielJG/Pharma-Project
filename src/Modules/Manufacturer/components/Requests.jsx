@@ -20,14 +20,14 @@ const RequestsPage = () => {
     const fetchData = async () => {
       try {
         // Fetch requests from reqtoman collection
-        const reqtomanResponse = await fetch("http://localhost:5000/api/getman", {
+        const reqtomanResponse = await fetch("https://pharma-project-1.onrender.com/api/getman", {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
         const reqtomanData = await reqtomanResponse.json();
     
         // Fetch user data from user collection
-        const userResponse = await fetch("http://localhost:5000/api/mandetail", {
+        const userResponse = await fetch("https://pharma-project-1.onrender.com/api/mandetail", {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
@@ -50,7 +50,7 @@ const RequestsPage = () => {
     try {
       console.log("Cancelling offer for request ID:", id);
   
-      const response = await fetch(`http://localhost:5000/api/update_manoffer_status/${id}`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/update_manoffer_status/${id}`, {
         method: "PUT", // ✅ Change to PUT
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -102,7 +102,7 @@ const RequestsPage = () => {
         shippingDate: formData.shippingDate,
       });
   
-      const response = await fetch("http://localhost:5000/api/makeoffer", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/makeoffer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -141,7 +141,7 @@ const RequestsPage = () => {
       console.log("Updating status for request ID:", id); // Log the request ID
       console.log("New status:", status); // Log the new status
   
-      const response = await fetch("http://localhost:5000/api/updatestatus", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/updatestatus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -254,7 +254,7 @@ const handleSendToPharmacy = async (request, userData) => {
     formData.append('memo', memoBlob, `memo_${request._id}.pdf`);
 
     // Send the memo to the server
-    const response = await fetch('http://localhost:5000/api/saveMemo', {
+    const response = await fetch('https://pharma-project-1.onrender.com/api/saveMemo', {
       method: 'POST',
       body: formData,
     });
@@ -445,7 +445,7 @@ const handleSendToPharmacy = async (request, userData) => {
       formData.append('shipping_date', request.delivery_date);
   
       // Send the invoice to the Flask server
-      const response = await fetch('http://localhost:5000/api/saveInvoice', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/saveInvoice', {
         method: 'POST',
         body: formData,
       });
@@ -483,7 +483,7 @@ const handleSendToPharmacy = async (request, userData) => {
 
   const handleDownloadPaymentProof = async (requestId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/downloadPaymentProof/${requestId}`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/downloadPaymentProof/${requestId}`, {
         method: 'GET',
         credentials: 'include',
       });

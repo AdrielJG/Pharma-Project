@@ -227,7 +227,7 @@ const MedicineList = () => {
         const fetchInventory = async () => {
             setIsLoading(true); // Set loading to true before fetching
             try {
-                const response = await fetch("http://localhost:5000/api/get-inventory", {
+                const response = await fetch("https://pharma-project-1.onrender.com/api/get-inventory", {
                     method: 'GET',
                     credentials: 'include',
                 });

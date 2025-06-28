@@ -14,7 +14,7 @@ const MedicineDetails = () => {
     useEffect(() => {
         const fetchMedicineDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/medicinedetails/${id}`, {
+                const response = await axios.get(`https://pharma-project-1.onrender.com/api/medicinedetails/${id}`, {
                     withCredentials: true, // Ensure cookies are sent with the request
                 });
                 setMedicine(response.data);
@@ -42,7 +42,7 @@ const MedicineDetails = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:5000/api/medicinedetails/${id}`,
+                `https://pharma-project-1.onrender.com/api/medicinedetails/${id}`,
                 updatedFields,
                 { withCredentials: true }
             );

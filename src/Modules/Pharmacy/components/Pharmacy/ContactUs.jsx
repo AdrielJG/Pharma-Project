@@ -23,7 +23,7 @@ const ContactUs = () => {
     setStatus(''); // Reset status message
 
     try {
-      const response = await fetch('http://localhost:5000/api/feedback', {
+      const response = await fetch('https://pharma-project-1.onrender.com/api/feedback', {
         method: 'POST',
         credentials: 'include',
         headers: {

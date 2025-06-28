@@ -223,7 +223,7 @@ const MedicineList = () => {
 
     useEffect(() => {
         // Fetch inventory from the backend
-        fetch("http://localhost:5000/api/get-pharinventory", {
+        fetch("https://pharma-project-1.onrender.com/api/get-pharinventory", {
             method: 'GET',
           credentials: 'include', // Ensure cookies/session data are sent
         })

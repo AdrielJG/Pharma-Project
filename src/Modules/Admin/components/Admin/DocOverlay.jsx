@@ -26,13 +26,13 @@ const DocOverlay = ({ isOpen, onClose, document }) => {
           <div className="h-64 overflow-y-scroll border border-gray-200 rounded-lg p-3">
             {document.fileType === 'pdf' ? (
               <iframe
-                src={`http://localhost:5000/uploads/${document.fileName}`}
+                src={`https://pharma-project-1.onrender.com/uploads/${document.fileName}`}
                 title="Document Viewer"
                 className="w-full h-full"
               />
             ) : (
               <img
-                src={`http://localhost:5000/uploads/${document.fileName}`}
+                src={`https://pharma-project-1.onrender.com/uploads/${document.fileName}`}
                 alt="Document Viewer"
                 className="w-full h-auto"
               />

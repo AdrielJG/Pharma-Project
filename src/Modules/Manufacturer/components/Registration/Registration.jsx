@@ -139,7 +139,7 @@ const Registration = () => {
     formDataToSend.append('document2', formData.document2);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/register', formDataToSend, {
+      const response = await axios.post('https://pharma-project-1.onrender.com/api/register', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log(response.data);

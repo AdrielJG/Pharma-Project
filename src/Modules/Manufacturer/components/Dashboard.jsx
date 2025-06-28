@@ -23,7 +23,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch inventory count
-        const inventoryResponse = await fetch('http://localhost:5000/api/get-inventory', {
+        const inventoryResponse = await fetch('https://pharma-project-1.onrender.com/api/get-inventory', {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -40,7 +40,7 @@ const Dashboard = () => {
 
       try {
         // Fetch transaction data
-        const transactionResponse = await fetch('http://localhost:5000/api/total-transactions', {
+        const transactionResponse = await fetch('https://pharma-project-1.onrender.com/api/total-transactions', {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

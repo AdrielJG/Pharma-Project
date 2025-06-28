@@ -43,7 +43,7 @@ const AddMedicine = () => {
         console.log("Submitting form...", formData); // Debug: log form data
         
         try {
-            const response = await fetch("http://localhost:5000/api/add-medicine", {
+            const response = await fetch("https://pharma-project-1.onrender.com/api/add-medicine", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

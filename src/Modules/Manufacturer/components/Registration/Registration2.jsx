@@ -31,7 +31,7 @@ const Registration2 = () => {
 
   // Fetch the email from session
   useEffect(() => {
-    fetch('http://localhost:5000/api/get-session-email', {
+    fetch('https://pharma-project-1.onrender.com/api/get-session-email', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -125,7 +125,7 @@ const Registration2 = () => {
     formDataToSend.append('document2', formData.document2);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/register', formDataToSend, {
+      const response = await axios.post('https://pharma-project-1.onrender.com/api/register', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log(response.data);

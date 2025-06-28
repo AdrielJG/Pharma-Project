@@ -21,7 +21,7 @@ const ChatInterface = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/users?email=${email}`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/users?email=${email}`, {
         method: "GET",
         credentials: "include",
       });
@@ -44,7 +44,7 @@ const ChatInterface = () => {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/group/${groupId}`, {
+        const response = await fetch(`https://pharma-project-1.onrender.com/api/group/${groupId}`, {
           method: "GET",
           credentials: "include",
         });
@@ -71,7 +71,7 @@ const ChatInterface = () => {
 useEffect(() => {
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/api/groups/${groupId}/messages`, {
         method: "GET",
         credentials: "include",
       });
@@ -100,7 +100,7 @@ useEffect(() => {
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
       try {
-        const response = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
+        const response = await fetch(`https://pharma-project-1.onrender.com/api/groups/${groupId}/messages`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

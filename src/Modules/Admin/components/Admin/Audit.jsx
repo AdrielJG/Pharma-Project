@@ -10,7 +10,7 @@ const AuditLogs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/audit-logs');
+                const response = await fetch('https://pharma-project-1.onrender.com/api/audit-logs');
                 const data = await response.json();
                 const normalizedData = data.map(log => ({
                     Date: log.Date,

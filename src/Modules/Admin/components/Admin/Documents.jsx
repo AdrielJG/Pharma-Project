@@ -11,7 +11,7 @@ const DocumentVerification = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/documents'); // Replace with your backend URL
+        const response = await fetch('https://pharma-project-1.onrender.com/api/documents'); // Replace with your backend URL
         if (!response.ok) {
           throw new Error('Failed to fetch documents');
         }
@@ -32,7 +32,7 @@ const DocumentVerification = () => {
     setSelectedDocument({
       name: document.name,
       module: document.account_type,
-      fileUrl: `http://localhost:5000/uploads/${document[documentField]}`,
+      fileUrl: `https://pharma-project-1.onrender.com/uploads/${document[documentField]}`,
       fileType: document[documentField].endsWith('.pdf') ? 'pdf' : 'image',
       documentType: documentField === 'document1' ? 'Document 1' : 'Document 2',
     });
@@ -46,7 +46,7 @@ const DocumentVerification = () => {
 
   const handleDownloadClick = async (filename) => {
     try {
-      const response = await fetch(`http://localhost:5000/uploads/${filename}`, {
+      const response = await fetch(`https://pharma-project-1.onrender.com/uploads/${filename}`, {
         method: 'GET',
       });
 
@@ -76,7 +76,7 @@ const DocumentVerification = () => {
   
       console.log("Payload being sent:", payload);
   
-      const response = await fetch("http://localhost:5000/api/update-verification", {
+      const response = await fetch("https://pharma-project-1.onrender.com/api/update-verification", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
