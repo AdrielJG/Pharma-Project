@@ -56,6 +56,25 @@
 			"type": "event"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "medicineId",
+					"type": "string"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newQuantity",
+					"type": "uint256"
+				}
+			],
+			"name": "MedicineUpdated",
+			"type": "event"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "string",
@@ -173,6 +192,55 @@
 			"type": "function"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "_addedBy",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "_medicineName",
+					"type": "string"
+				}
+			],
+			"name": "getMedicineByEmailAndName",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "medicineId",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "medicineGroup",
+					"type": "string"
+				},
+				{
+					"internalType": "uint256",
+					"name": "quantity",
+					"type": "uint256"
+				},
+				{
+					"internalType": "string",
+					"name": "usageInstructions",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "sideEffects",
+					"type": "string"
+				},
+				{
+					"internalType": "uint256",
+					"name": "addedAt",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"name": "medicineCount",
 			"outputs": [
@@ -183,6 +251,24 @@
 				}
 			],
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "_medicineId",
+					"type": "string"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_newQuantity",
+					"type": "uint256"
+				}
+			],
+			"name": "updateMedicineQuantity",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]
